@@ -184,79 +184,74 @@ export const App: React.FC = () => {
 
   return (
     <div className="h-screen w-screen flex flex-col bg-black text-zinc-100 antialiased overflow-hidden select-none font-sans">
-      {/* 1. TOP COCKPIT NAVIGATION HEADER (Text-Only, Black & White) */}
-      <header className="h-14 bg-black border-b border-zinc-800 flex items-center justify-between px-3 sm:px-4 z-30 shrink-0">
-        <div className="flex items-center space-x-2 sm:space-x-3">
-          {/* Sidebar Toggle Button */}
+      {/* 1. TOP COCKPIT NAVIGATION HEADER (Premium, Minimalist, Text-Only) */}
+      <header className="h-12 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800/80 flex items-center justify-between px-3 sm:px-4 z-30 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Controls Toggle Button */}
           <button
             onClick={() => setIsSidebarOpen((prev) => !prev)}
-            className="px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 transition cursor-pointer font-mono text-[11px] font-bold"
+            className="px-2.5 py-1 rounded-md bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white transition cursor-pointer font-mono text-[11px] font-medium"
             title="Toggle Control Drawer"
           >
-            {isSidebarOpen ? '[HIDE CONTROLS]' : '[SHOW CONTROLS]'}
+            {isSidebarOpen ? 'PANEL [ON]' : 'PANEL [OFF]'}
           </button>
 
+          <div className="h-4 w-px bg-zinc-800 hidden sm:block" />
+
           {/* Project Title (Text-Only, No Logo Icons) */}
-          <div>
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="font-bold text-xs sm:text-sm tracking-wider uppercase text-white font-mono">
-                AERO-SCAN <span className="text-zinc-400">//</span> COGNITIVE EW C2
-              </span>
-              <span className="px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-mono bg-zinc-900 text-zinc-300 border border-zinc-700">
-                SIH-2.1
-              </span>
-              <span className="hidden md:inline px-1.5 py-0.5 rounded text-[9px] font-mono bg-zinc-900 text-zinc-300 border border-zinc-700">
-                DRDO ESM
-              </span>
-            </div>
-            <p className="hidden lg:block text-[10px] text-zinc-500 font-mono">
-              Electronic Support Measures • Closed-Loop Dynamic Scan Scheduler
-            </p>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-xs sm:text-sm tracking-wider uppercase text-white font-mono">
+              AERO-SCAN
+            </span>
+            <span className="text-zinc-600 font-mono text-xs hidden sm:inline">//</span>
+            <span className="text-zinc-400 font-mono text-xs hidden sm:inline">COGNITIVE EW C2</span>
+            <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-zinc-900 text-zinc-400 border border-zinc-800 hidden md:inline">
+              DRDO ESM
+            </span>
+            <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-zinc-900 text-zinc-400 border border-zinc-800">
+              SIH-2.1
+            </span>
           </div>
         </div>
 
-        {/* Right Header Quick-Stats & Monochrome Action Buttons */}
-        <div className="flex items-center space-x-1.5 sm:space-x-2 font-mono text-xs">
-          {/* Quick-Stats Telemetry Bar */}
-          <div className="hidden xl:flex items-center space-x-3 text-[11px] text-zinc-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800">
-            <span>Spectrum: <strong className="text-white">{config.numChannels} Channels</strong></span>
-            <span className="text-zinc-600">|</span>
-            <span>MDS: <strong className="text-white">{config.receiverMdsDbm.toFixed(0)} dBm</strong></span>
-            <span className="text-zinc-600">|</span>
-            <span>Compute: <strong className="text-white">{computeTimeMs.toFixed(1)}ms Local</strong></span>
-          </div>
+        {/* Center Live Telemetry Bar */}
+        <div className="hidden lg:flex items-center gap-3 text-[11px] font-mono text-zinc-400 bg-zinc-900/60 px-3 py-1 rounded-md border border-zinc-800">
+          <span>SPECTRUM: <strong className="text-zinc-200">{config.numChannels} CH</strong></span>
+          <span className="text-zinc-700">|</span>
+          <span>MDS: <strong className="text-zinc-200">{config.receiverMdsDbm.toFixed(0)} dBm</strong></span>
+          <span className="text-zinc-700">|</span>
+          <span>COMPUTE: <strong className="text-zinc-200">{computeTimeMs.toFixed(1)}ms</strong></span>
+        </div>
 
-          {/* Ingest Matrix Button */}
+        {/* Right Header Action Buttons (Monochrome & Smooth) */}
+        <div className="flex items-center gap-1.5 font-mono text-xs">
           <button
             onClick={() => setIsIngestOpen(true)}
-            className="px-2.5 sm:px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-semibold rounded-lg text-[11px] sm:text-xs transition cursor-pointer"
+            className="px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white font-medium rounded-md text-[11px] transition cursor-pointer"
             title="Upload Custom Matrix (Jury Sandbox)"
           >
             INGEST
           </button>
 
-          {/* Radar Math Theory Button */}
           <button
             onClick={() => setIsTheoryOpen(true)}
-            className="px-2.5 sm:px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-semibold rounded-lg text-[11px] sm:text-xs transition cursor-pointer"
+            className="px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white font-medium rounded-md text-[11px] transition cursor-pointer"
             title="Wiley-Richards & Co-Prime Radar Math"
           >
             THEORY
           </button>
 
-          {/* Export CSV Button */}
           <button
             onClick={downloadTelemetryCsv}
-            className="px-2.5 sm:px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-semibold rounded-lg text-[11px] sm:text-xs transition cursor-pointer"
+            className="px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white font-medium rounded-md text-[11px] transition cursor-pointer"
             title="Download Telemetry CSV"
           >
             EXPORT
           </button>
 
-          {/* Reroll Seed Button (Crisp White/Black contrast) */}
           <button
             onClick={rerollSeed}
-            className="px-3 sm:px-3.5 py-1.5 bg-white hover:bg-zinc-200 text-black font-bold rounded-lg text-[11px] sm:text-xs shadow-md transition active:scale-95 cursor-pointer"
+            className="px-3 py-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-650 text-white font-semibold rounded-md text-[11px] transition active:scale-95 cursor-pointer shadow-xs"
             title="Proceduralize New Random Battlefield Seed"
           >
             REROLL SEED
@@ -276,10 +271,10 @@ export const App: React.FC = () => {
 
         {/* Left Sidebar: Controls Drawer */}
         {isSidebarOpen && (
-          <aside className="fixed md:static inset-y-14 left-0 w-72 sm:w-80 border-r border-zinc-800 bg-black md:bg-zinc-950 flex flex-col p-3.5 space-y-3.5 overflow-y-auto custom-scrollbar shrink-0 shadow-2xl z-30 font-mono text-xs">
+          <aside className="fixed md:static inset-y-12 left-0 w-72 sm:w-80 border-r border-zinc-850 bg-zinc-950 flex flex-col p-3 space-y-3 overflow-y-auto custom-scrollbar shrink-0 shadow-2xl z-30 font-mono text-xs">
             {/* Section 1: Tactical Scenarios */}
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-1.5">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
                   Tactical RF Scenarios
                 </span>
@@ -295,10 +290,10 @@ export const App: React.FC = () => {
                   <button
                     key={id}
                     onClick={() => applyScenario(id)}
-                    className={`p-2 rounded-lg text-left transition border cursor-pointer ${
+                    className={`p-2 rounded-md text-left transition border cursor-pointer ${
                       activeScenario === id
-                        ? 'bg-zinc-800 border-zinc-300 text-white font-bold'
-                        : 'bg-zinc-950 border-zinc-850 text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
+                        ? 'bg-zinc-850 border-zinc-500 text-white font-bold shadow-xs'
+                        : 'bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
                     }`}
                   >
                     <div className="text-[11px] mb-0.5">{label}</div>
@@ -310,7 +305,7 @@ export const App: React.FC = () => {
 
             {/* Section 2: Active Cognitive Schedulers */}
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-1.5">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
                   Receiver Schedulers
                 </span>
@@ -348,10 +343,10 @@ export const App: React.FC = () => {
                     <div
                       key={name}
                       onClick={() => setActiveSchedulerName(name)}
-                      className={`p-2.5 rounded-lg border transition cursor-pointer flex items-center justify-between ${
+                      className={`p-2 rounded-md border transition cursor-pointer flex items-center justify-between ${
                         isSelected
-                          ? 'bg-zinc-800 border-zinc-300 ring-1 ring-zinc-300'
-                          : 'bg-zinc-950 border-zinc-850 hover:bg-zinc-900'
+                          ? 'bg-zinc-850 border-zinc-500 ring-1 ring-zinc-500/50 shadow-xs'
+                          : 'bg-zinc-900/60 border-zinc-800 hover:bg-zinc-900 hover:border-zinc-700'
                       }`}
                     >
                       <div>
@@ -453,9 +448,9 @@ export const App: React.FC = () => {
 
         {/* Center Main Cockpit Area */}
         <main className="flex-1 relative bg-black flex flex-col overflow-hidden">
-          {/* Top Sub-Nav View Switcher (Text-Only) */}
-          <div className="h-10 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between px-3 sm:px-4 shrink-0 font-mono text-xs overflow-x-auto">
-            <div className="flex items-center space-x-1 shrink-0">
+          {/* Top Sub-Nav View Switcher (Premium Segmented Tabs) */}
+          <div className="h-10 bg-black border-b border-zinc-800/80 flex items-center justify-between px-3 sm:px-4 shrink-0 font-mono text-xs overflow-x-auto">
+            <div className="flex items-center gap-1 shrink-0">
               {[
                 { id: 'waterfall', label: '2D SPECTROGRAM WATERFALL' },
                 { id: 'metrics', label: 'FIGURES OF MERIT SCORECARD' },
@@ -465,10 +460,10 @@ export const App: React.FC = () => {
                 <button
                   key={id}
                   onClick={() => setActiveTab(id as any)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition cursor-pointer whitespace-nowrap ${
+                  className={`px-3 py-1 rounded-md text-[11px] font-mono font-medium transition cursor-pointer whitespace-nowrap ${
                     activeTab === id
-                      ? 'bg-zinc-800 text-white border border-zinc-600 font-bold'
-                      : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                      ? 'bg-zinc-800 text-white border border-zinc-700 shadow-xs'
+                      : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
                   }`}
                 >
                   {label}
@@ -476,53 +471,78 @@ export const App: React.FC = () => {
               ))}
             </div>
 
-            {/* Active Strategy Badge */}
-            <div className="hidden lg:flex items-center gap-2 text-[11px] font-mono shrink-0 pl-2">
-              <span className="text-zinc-500">Scheduler:</span>
-              <span className="text-white font-bold">{activeSchedulerName}</span>
+            {/* Active Strategy Indicator */}
+            <div className="hidden md:flex items-center gap-2 text-[11px] font-mono shrink-0 pl-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="text-zinc-500">ACTIVE:</span>
+              <span className="text-zinc-200 font-semibold">{activeSchedulerName}</span>
             </div>
           </div>
 
           {/* VIEW TAB 1: WATERFALL SPECTROGRAM */}
           {activeTab === 'waterfall' && (
-            <div className="flex-1 relative flex flex-col p-2.5 sm:p-4 overflow-hidden justify-between">
-              {/* Top Floating Inspection HUD */}
-              <div className="absolute top-4 left-5 z-20 pointer-events-none bg-zinc-900/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-zinc-800 text-[11px] font-mono text-zinc-300 shadow-xl flex flex-col gap-0.5 max-w-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-white font-bold">Look: Ch {currentLog.actions[currentStep]}</span>
-                  <span className="text-zinc-600">•</span>
-                  <span className={isCurrentIntercept ? 'text-white font-bold' : 'text-zinc-400'}>
-                    {isCurrentIntercept ? '● INTERCEPT HIT' : '○ Silent Noise'}
-                  </span>
+            <div className="flex-1 relative flex flex-col p-2 sm:p-3 overflow-hidden justify-between gap-1.5">
+              {/* Tactical Status & Telemetry Bar (Dedicated, Non-Overlapping) */}
+              <div className="flex items-center justify-between gap-2 px-3 py-1.5 bg-zinc-950/90 border border-zinc-850 rounded-lg text-[11px] font-mono shrink-0">
+                <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-zinc-500">LOOK:</span>
+                    <span className="text-white font-bold bg-zinc-900 px-1.5 py-0.5 rounded border border-zinc-800">
+                      Ch {currentLog.actions[currentStep]}
+                    </span>
+                  </div>
+
+                  <div className="text-zinc-700 hidden sm:inline">|</div>
+
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-zinc-500">SIGNAL:</span>
+                    <span
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{
+                        backgroundColor:
+                          currentCellThreat === EmitterClass.PERIODIC ? '#00f0ff' :
+                          currentCellThreat === EmitterClass.AGILE ? '#f59e0b' :
+                          currentCellThreat === EmitterClass.SPORADIC ? '#ff2255' :
+                          currentCellThreat === EmitterClass.SPATIAL_SCAN ? '#a855f7' : '#71717a'
+                      }}
+                    />
+                    <span className="text-zinc-200 font-sans text-[11px]">
+                      {threatLabels[currentCellThreat] || 'Quiet Spectrum'}
+                    </span>
+                  </div>
+
+                  <div className="text-zinc-700 hidden sm:inline">|</div>
+
+                  <div>
+                    {isCurrentIntercept ? (
+                      <span className="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-700/60 text-emerald-400 font-bold text-[10px] inline-flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                        INTERCEPT HIT
+                      </span>
+                    ) : (
+                      <span className="text-zinc-500 text-[10px]">○ Scanning Noise</span>
+                    )}
+                  </div>
                 </div>
-                <div className="text-[10px] text-zinc-400">
-                  Signal: <span className="text-zinc-200">{threatLabels[currentCellThreat] || 'Quiet Spectrum'}</span>
+
+                {/* Right Quick Telemetry */}
+                <div className="hidden sm:flex items-center gap-3 text-[10px] font-mono text-zinc-400 shrink-0">
+                  <div>Pd: <strong className="text-white font-bold">{(activeMetrics.pDSlot * 100).toFixed(1)}%</strong></div>
+                  <span className="text-zinc-700">|</span>
+                  <div>Missile Pd: <strong className="text-rose-400 font-bold">{(activeMetrics.pDSporadic * 100).toFixed(1)}%</strong></div>
+                  <span className="text-zinc-700">|</span>
+                  <div>Gain: <strong className="text-emerald-400 font-bold">{activeMetrics.interceptionEfficiencyRatio.toFixed(2)}x</strong></div>
                 </div>
               </div>
 
-              {/* Top Right Stats Badge */}
-              <div className="hidden md:flex absolute top-4 right-5 z-20 pointer-events-none bg-zinc-900/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-zinc-800 text-[10px] font-mono text-zinc-300 shadow-xl items-center gap-3">
-                <div>
-                  Overall Pd: <strong className="text-white">{(activeMetrics.pDSlot * 100).toFixed(1)}%</strong>
-                </div>
-                <div className="text-zinc-600">|</div>
-                <div>
-                  Missile Pd: <strong className="text-white">{(activeMetrics.pDSporadic * 100).toFixed(1)}%</strong>
-                </div>
-                <div className="text-zinc-600">|</div>
-                <div>
-                  Gain: <strong className="text-white">{activeMetrics.interceptionEfficiencyRatio.toFixed(2)}x</strong>
-                </div>
-              </div>
-
-              {/* Contained Canvas Viewport */}
-              <div className="flex-1 min-h-[220px] max-h-[460px] relative flex flex-col justify-center my-1">
+              {/* Contained Canvas Viewport (100% Unobstructed) */}
+              <div className="flex-1 min-h-[200px] relative flex flex-col justify-center">
                 <WaterfallCanvas
                   env={env}
                   selectedLog={currentLog}
                   currentStep={currentStep}
                   onSeek={setCurrentStep}
-                  height={window.innerHeight > 800 ? 320 : 260}
+                  height={window.innerHeight > 820 ? 340 : 270}
                 />
 
                 {/* Radar Axis Scale Legend */}
@@ -533,25 +553,31 @@ export const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Monochromatic Tactical Legend Strip */}
-              <div className="flex items-center justify-center gap-2 sm:gap-4 text-[10px] font-mono text-zinc-400 py-1 flex-wrap">
+              {/* Vibrant Tactical Radar Legend Strip */}
+              <div className="flex items-center justify-center gap-3 sm:gap-5 text-[10px] sm:text-[11px] font-mono text-zinc-400 py-0.5 flex-wrap">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-[#383842]"></span> Periodic Radar
+                  <span className="w-2.5 h-2.5 rounded-xs bg-[#00f0ff] shadow-[0_0_6px_#00f0ff80]"></span>
+                  <span className="text-zinc-300">Class 1: Surveillance</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-[#5c5c6b]"></span> Agile FHSS
+                  <span className="w-2.5 h-2.5 rounded-xs bg-[#f59e0b] shadow-[0_0_6px_#f59e0b80]"></span>
+                  <span className="text-zinc-300">Class 2: Agile FHSS</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-[#8e8e9c]"></span> Missile Lock (Pop-Up)
+                  <span className="w-2.5 h-2.5 rounded-xs bg-[#ff2255] shadow-[0_0_6px_#ff225580]"></span>
+                  <span className="text-zinc-300">Class 3: Missile Lock</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-[#c4c4d0]"></span> Rotating Beam
+                  <span className="w-2.5 h-2.5 rounded-xs bg-[#a855f7] shadow-[0_0_6px_#a855f780]"></span>
+                  <span className="text-zinc-300">Class 4: Rotating Beam</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm border border-zinc-400 bg-white/20"></span> Dwell Look
+                  <span className="w-2.5 h-2.5 rounded-xs border border-cyan-400 bg-cyan-400/20"></span>
+                  <span className="text-zinc-400">Receiver Dwell</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-white"></span> INTERCEPT HIT
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] shadow-[0_0_8px_#10b981]"></span>
+                  <span className="text-emerald-400 font-semibold">INTERCEPT HIT</span>
                 </div>
               </div>
 

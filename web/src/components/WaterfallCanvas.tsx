@@ -33,16 +33,18 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
   const T = env.config.numSteps;
   const C = env.config.numChannels;
 
-  // Tactical Monochrome / Grayscale Palette (FLIR style)
+  // Tactical Electronic Warfare Radar Spectrogram Palette (Vibrant High-Fidelity SDR)
   const COLORS = {
-    empty: '#050507',
-    periodic: '#383842',       // Class 1: Periodic Radar (Dark Neutral Grey)
-    agile: '#5c5c6b',          // Class 2: Agile FHSS (Mid Grey)
-    sporadic: '#8e8e9c',       // Class 3: Pop-Up Missile (Light Grey)
-    spatial: '#c4c4d0',        // Class 4: Rotating Radar (Silver Grey)
-    hit: '#ffffff',            // Interception Hit (Pure White-Hot)
-    dwell: 'rgba(255, 255, 255, 0.22)',
-    grid: 'rgba(255, 255, 255, 0.06)'
+    empty: '#030508',          // Deep void black noise floor
+    periodic: '#00f0ff',       // Class 1: Surveillance Radar (Electric Neon Cyan)
+    agile: '#f59e0b',          // Class 2: Agile Frequency Hopper (Tactical Amber)
+    sporadic: '#ff2255',       // Class 3: Pop-Up Lethal Missile Guidance (Laser Crimson)
+    spatial: '#a855f7',        // Class 4: Spatially Rotating Beam (Cyber Violet)
+    hit: '#10b981',            // Direct Intercept Hit (High-Voltage Neon Emerald Green)
+    hitGlow: '#059669',        // Hit halo glow
+    dwell: 'rgba(255, 255, 255, 0.22)', // Receiver Dwell Window
+    grid: 'rgba(255, 255, 255, 0.04)',
+    playhead: '#ffffff'
   };
 
   const threatLabels: Record<number, string> = {
@@ -51,6 +53,14 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
     [EmitterClass.AGILE]: 'Class 2: Frequency-Hopper (FHSS Net)',
     [EmitterClass.SPORADIC]: 'Class 3: High-Threat Missile Lock (Pop-Up)',
     [EmitterClass.SPATIAL_SCAN]: 'Class 4: Spatially Rotating Radar (360°)'
+  };
+
+  const threatColors: Record<number, string> = {
+    [EmitterClass.EMPTY]: '#71717a',
+    [EmitterClass.PERIODIC]: '#00f0ff',
+    [EmitterClass.AGILE]: '#f59e0b',
+    [EmitterClass.SPORADIC]: '#ff2255',
+    [EmitterClass.SPATIAL_SCAN]: '#a855f7'
   };
 
   const draw = useCallback(() => {
@@ -62,14 +72,14 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
     const width = canvas.width;
     const canvasHeight = canvas.height;
 
-    // Background
+    // Background (Deep Void)
     ctx.fillStyle = COLORS.empty;
     ctx.fillRect(0, 0, width, canvasHeight);
 
     const cellWidth = width / T;
     const cellHeight = canvasHeight / C;
 
-    // 1. Draw Ground-Truth Spectrum Activity
+    // 1. Draw Ground-Truth Spectrum Activity (Vibrant Multi-Color Pulses)
     for (let t = 0; t < T; t++) {
       for (let c = 0; c < C; c++) {
         const val = env.getCell(t, c);
@@ -82,11 +92,11 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
         else if (val === EmitterClass.SPATIAL_SCAN) fill = COLORS.spatial;
 
         ctx.fillStyle = fill;
-        ctx.fillRect(t * cellWidth, (C - 1 - c) * cellHeight, Math.max(1, cellWidth), cellHeight);
+        ctx.fillRect(t * cellWidth, (C - 1 - c) * cellHeight, Math.max(1.2, cellWidth), cellHeight);
       }
     }
 
-    // 2. Draw Subtle Channel Grid Lines (every 4 or 8 channels)
+    // 2. Draw Subtle Channel Grid Lines
     ctx.strokeStyle = COLORS.grid;
     ctx.lineWidth = 0.5;
     const gridInterval = C <= 32 ? 4 : 8;
@@ -103,12 +113,11 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
     ctx.fillStyle = COLORS.dwell;
     for (let t = 0; t < renderLimit; t++) {
       const ch = selectedLog.actions[t];
-      const y = (C - 1 - ch) * cellHeight + cellHeight * 0.2;
-      ctx.fillRect(t * cellWidth, y, Math.max(1.5, cellWidth), cellHeight * 0.6);
+      const y = (C - 1 - ch) * cellHeight + cellHeight * 0.15;
+      ctx.fillRect(t * cellWidth, y, Math.max(1.5, cellWidth), cellHeight * 0.7);
     }
 
-    // 4. Draw Interception Hits (Pure White)
-    ctx.fillStyle = COLORS.hit;
+    // 4. Draw Interception Hits (Brilliant Neon Emerald Green with Glow)
     for (let t = 0; t < renderLimit; t++) {
       if (selectedLog.detections[t] === 1) {
         const ch = selectedLog.actions[t];
@@ -116,16 +125,25 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
         const cy = (C - 1 - ch) * cellHeight + cellHeight / 2;
         const radius = Math.min(cellHeight * 0.45, 5);
 
+        // Outer glow
+        ctx.fillStyle = COLORS.hit;
         ctx.beginPath();
         ctx.arc(cx, cy, Math.max(2.5, radius), 0, Math.PI * 2);
         ctx.fill();
+
+        // Inner bright white spark
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(cx, cy, Math.max(1, radius * 0.5), 0, Math.PI * 2);
+        ctx.fill();
+
         ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 0.8;
         ctx.stroke();
       }
     }
 
-    // 5. Draw Live Playhead Line
+    // 5. Draw Live Playhead Line (Crisp White Laser)
     const playheadX = currentStep * cellWidth;
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 1.2;
@@ -134,13 +152,13 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
     ctx.lineTo(playheadX, canvasHeight);
     ctx.stroke();
 
-    // Active look indicator at playhead
+    // Active look indicator box at playhead
     if (currentStep < T) {
       const activeCh = selectedLog.actions[currentStep];
       const activeY = (C - 1 - activeCh) * cellHeight;
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.8;
-      ctx.strokeRect(playheadX - 4, activeY - 1, Math.max(cellWidth + 8, 12), cellHeight + 2);
+      ctx.lineWidth = 2;
+      ctx.strokeRect(playheadX - 4, activeY - 1, Math.max(cellWidth + 8, 14), cellHeight + 2);
     }
   }, [env, selectedLog, currentStep, T, C]);
 
@@ -206,29 +224,40 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
       {/* Floating Inspection Tooltip */}
       {hoverInfo && (
         <div
-          className="absolute pointer-events-none z-30 transform -translate-x-1/2 -translate-y-full mb-2 px-3 py-2 bg-zinc-900/95 border border-zinc-700 rounded-lg shadow-2xl backdrop-blur-md text-[11px] font-mono text-zinc-200"
+          className="absolute pointer-events-none z-30 transform -translate-x-1/2 -translate-y-full mb-2 px-3 py-2 bg-zinc-950/95 border border-zinc-700 rounded-lg shadow-2xl backdrop-blur-md text-[11px] font-mono text-zinc-200 min-w-[180px]"
           style={{
             left: Math.max(100, Math.min((canvasRef.current?.width || 300) - 100, hoverInfo.x)),
-            top: Math.max(60, hoverInfo.y)
+            top: Math.max(50, hoverInfo.y)
           }}
         >
-          <div className="flex items-center gap-2 mb-1 border-b border-zinc-800 pb-1">
-            <span className="text-zinc-400">Epoch:</span>
-            <span className="text-white font-bold">{hoverInfo.step}</span>
-            <span className="text-zinc-600">•</span>
-            <span className="text-zinc-400">Channel:</span>
-            <span className="text-white font-bold">Ch {hoverInfo.channel}</span>
+          <div className="flex items-center justify-between gap-2 mb-1 border-b border-zinc-800 pb-1">
+            <div>
+              <span className="text-zinc-500">t=</span>
+              <span className="text-white font-bold">{hoverInfo.step}</span>
+            </div>
+            <div>
+              <span className="text-zinc-500">Ch </span>
+              <span className="text-white font-bold">{hoverInfo.channel}</span>
+            </div>
           </div>
-          <div className="text-zinc-300 font-sans text-[10px] mb-1">
-            {threatLabels[hoverInfo.threatClass] || 'Quiet Spectrum'}
+          <div className="flex items-center gap-1.5 my-1">
+            <span
+              className="w-2 h-2 rounded-full shrink-0"
+              style={{ backgroundColor: threatColors[hoverInfo.threatClass] || '#71717a' }}
+            />
+            <span className="text-zinc-300 font-sans text-[10px] leading-tight">
+              {threatLabels[hoverInfo.threatClass] || 'Quiet Spectrum'}
+            </span>
           </div>
           {hoverInfo.isIntercepted ? (
-            <div className="text-white font-bold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-white"></span> DIRECT INTERCEPT HIT
+            <div className="text-emerald-400 font-bold flex items-center gap-1.5 pt-1 border-t border-zinc-800 text-[10px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              DIRECT INTERCEPT HIT
             </div>
           ) : hoverInfo.receiverHere ? (
-            <div className="text-zinc-400 flex items-center gap-1 text-[10px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-zinc-400"></span> Receiver Look Dwell
+            <div className="text-zinc-400 flex items-center gap-1.5 pt-1 border-t border-zinc-800 text-[10px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-zinc-400"></span>
+              Receiver Look Dwell
             </div>
           ) : null}
         </div>

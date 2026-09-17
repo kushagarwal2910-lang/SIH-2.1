@@ -1,26 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 /* ==========================================================================
-   AERO-SCAN TACTICAL BLACK & GREY DESIGN SYSTEM
-   High-Contrast Monochrome • Stealth Military C2 • 100% Responsive
+   AERO-SCAN TACTICAL STEALTH DESIGN SYSTEM
+   Premium Black & Grey Cockpit • Clean Monochrome Controls • Vibrant RF Canvas
    ========================================================================== */
 
 :root {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-  --bg-app: #000000;
-  --bg-surface: #09090b;
-  --bg-elevated: #121215;
-  --bg-hover: #1c1c21;
-
-  --border-subtle: #18181c;
-  --border-default: #27272a;
-  --border-strong: #3f3f46;
-
-  --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
 }
 
 *, *::before, *::after {
@@ -36,31 +23,75 @@ html, body {
   color: #f4f4f5;
   overflow: hidden;
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Sleek Monochrome Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
+/* ==========================================================================
+   PREMIUM ULTRA-SLEEK SCROLLBARS (Zero Clumsiness)
+   ========================================================================== */
+
+/* Universal sleek scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+/* Chrome / Safari / Edge */
+::-webkit-scrollbar {
   width: 4px;
   height: 4px;
 }
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #000000;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-/* Range input styling (monochrome) */
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Custom scrollbar class for tight container scrolling */
+.custom-scrollbar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Range input styling (monochrome & clean) */
 input[type="range"] {
   accent-color: #ffffff;
 }
 
 /* Focus styles */
 button:focus-visible, input:focus-visible {
-  outline: 1px solid #ffffff;
+  outline: 1px solid rgba(255, 255, 255, 0.6);
   outline-offset: 1px;
 }

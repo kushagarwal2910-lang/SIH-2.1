@@ -44,12 +44,12 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   }, [isPlaying, playbackSpeed, onStep]);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 bg-zinc-900/90 backdrop-blur-md border border-zinc-800 px-3 sm:px-4 py-2 rounded-xl shadow-2xl text-xs font-mono w-full max-w-2xl">
-      {/* Playback Action Buttons (Pure Black & White) */}
+    <div className="flex flex-wrap items-center justify-between gap-2.5 bg-zinc-950/90 backdrop-blur-md border border-zinc-850 px-3 sm:px-4 py-1.5 rounded-lg shadow-xl text-xs font-mono w-full max-w-2xl">
+      {/* Playback Action Buttons (Sleek Monochrome) */}
       <div className="flex items-center gap-1.5">
         <button
           onClick={onReset}
-          className="px-2.5 py-1.5 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition text-[11px] font-semibold cursor-pointer"
+          className="px-2.5 py-1 rounded-md bg-zinc-900 hover:bg-zinc-850 text-zinc-400 hover:text-white border border-zinc-800 transition text-[11px] font-medium cursor-pointer"
           title="Reset Timeline to Epoch 0"
         >
           RESET
@@ -57,10 +57,10 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 
         <button
           onClick={onPlayPause}
-          className={`px-3.5 py-1.5 rounded-lg font-bold text-xs transition cursor-pointer ${
+          className={`px-3 py-1 rounded-md font-semibold text-xs transition cursor-pointer ${
             isPlaying
-              ? 'bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-600'
-              : 'bg-white hover:bg-zinc-200 text-black shadow-md'
+              ? 'bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-650'
+              : 'bg-zinc-100 hover:bg-white text-black shadow-xs font-bold'
           }`}
           title={isPlaying ? 'Pause Simulation' : 'Play Live Mission'}
         >
@@ -70,20 +70,20 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
         <button
           onClick={onStep}
           disabled={isPlaying || currentStep >= maxSteps - 1}
-          className="px-2.5 py-1.5 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition text-[11px] font-semibold cursor-pointer"
+          className="px-2.5 py-1 rounded-md bg-zinc-900 hover:bg-zinc-850 text-zinc-400 hover:text-white border border-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition text-[11px] font-medium cursor-pointer"
           title="Advance by +1 Epoch"
         >
           +1 STEP
         </button>
       </div>
 
-      {/* Speed Selector (Pure Monochrome) */}
-      <div className="flex items-center bg-black p-0.5 rounded-lg border border-zinc-800">
+      {/* Speed Selector */}
+      <div className="flex items-center bg-zinc-900/90 p-0.5 rounded-md border border-zinc-800">
         {[1, 2, 5, 10].map((s) => (
           <button
             key={s}
             onClick={() => onSpeedChange(s)}
-            className={`px-2 py-1 rounded text-[10px] font-mono transition cursor-pointer ${
+            className={`px-2 py-0.5 rounded text-[10px] font-mono transition cursor-pointer ${
               playbackSpeed === s
                 ? 'bg-zinc-800 text-white font-bold'
                 : 'text-zinc-500 hover:text-zinc-300'
@@ -95,14 +95,14 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
       </div>
 
       {/* Scrubber Range Slider */}
-      <div className="flex items-center gap-2 flex-1 min-w-[120px] sm:min-w-[160px]">
+      <div className="flex items-center gap-2 flex-1 min-w-[120px] sm:min-w-[150px]">
         <input
           type="range"
           min={0}
           max={maxSteps - 1}
           value={currentStep}
           onChange={(e) => onSeek(Number(e.target.value))}
-          className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-white focus:outline-none"
+          className="w-full h-1 bg-zinc-850 rounded-lg appearance-none cursor-pointer accent-white focus:outline-none"
         />
         <span className="text-[10px] text-zinc-400 whitespace-nowrap">
           <span className="text-white font-bold">{currentStep}</span> / {maxSteps}
@@ -114,9 +114,9 @@ export const PlaybackControls: React.FC<PlaybackControlsProps> = ({
         <div>
           Look: <strong className="text-white font-bold">Ch {currentAction}</strong>
         </div>
-        <div className="text-zinc-600">•</div>
+        <div className="text-zinc-700">•</div>
         <div>
-          Hits: <strong className="text-white font-bold">{detectionsCount}</strong>
+          Hits: <strong className="text-emerald-400 font-bold">{detectionsCount}</strong>
         </div>
       </div>
     </div>
