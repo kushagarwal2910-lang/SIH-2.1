@@ -220,21 +220,6 @@ python -m unittest test_simulation.py -v
 
 ---
 
-## Defense Jury Q&A Reference Guide
-
-### Q1: "Why is overall $P_d$ approximately 4%? Isn't that low?"
-> **Answer:** This reflects the fundamental physics of the sensor. In an ESM receiver with an instantaneous bandwidth of 1 channel out of 32 channels, the sensor physically covers only $1/32 = 3.125\%$ of the spectrum at any epoch. A legacy sweep achieves only 2.5%. Our Q-Learning agent achieves 4.0%—a **+60% gain above the uniform geometric limit**. Furthermore, on high-priority sporadic missile bursts where intercept latency is critical, the agent achieves **8.2% (a 3.1x multiplier)**.
-
-### Q2: "Why use Q-Learning and UCB1 rather than deep neural networks or Transformers?"
-> **Answer:**  
-> 1. **SWaP Constraints on Drones:** Real ESM payloads on tactical UAVs operate under microsecond dwell timing budgets. Deep networks require power-hungry GPUs and introduce unacceptable inference latency. Q-table lookups execute in sub-microsecond time.  
-> 2. **Cold-Start in Unknown Environments:** The problem statement explicitly requires scheduling *in the absence of prior reliable intelligence*. Deep models require extensive offline training datasets; our cognitive agents adapt in real-time within tens of steps directly from online hits and misses.
-
-### Q3: "How does the Co-Prime Sweeper mathematically break periodic blind spots?"
-> **Answer:** When sweeping sequentially with stride $s=1$, any periodic radar whose period $T_e$ shares common factors with channel count $C$ ($\gcd(C, T_e) > 1$) locks into harmonic phase resonance, creating permanent blind phases. By choosing a prime stride $s$ such that $\gcd(s, C) = 1$, the Chinese Remainder Theorem guarantees that the receiver samples every channel at differing phase offsets, eliminating cyclic blind spots.
-
----
-
 ## Repository Structure
 
 ```
@@ -258,9 +243,3 @@ python -m unittest test_simulation.py -v
         ├── components/    # WaterfallCanvas, MetricsDashboard, PlaybackControls, TheoryModal
         └── engine/        # In-browser TypeScript port of RF environment, schedulers & metrics
 ```
-
----
-
-## License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details. Built for the Smart India Hackathon (SIH).
