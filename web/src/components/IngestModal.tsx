@@ -124,7 +124,7 @@ export const IngestModal: React.FC<IngestModalProps> = ({
         <div className="px-5 py-3.5 border-b border-zinc-800 flex items-center justify-between bg-zinc-950">
           <div>
             <h3 className="font-mono font-bold text-xs text-white uppercase tracking-wider">
-              Jury Sandbox // Ingest Custom RF Matrix
+              Tactical Testbench // Ingest Custom RF Matrix
             </h3>
             <p className="text-[10px] text-zinc-400">
               Upload or generate your own T x C ground truth transmission matrix

@@ -6,7 +6,7 @@ Designed for Defense Evaluators & Military Operators:
 - Crystal-clear visual guides and plain-English mission debriefs.
 - 2D Waterfall Spectrogram with tactical threat color-coding and plain-English hover tooltips.
 - Full compliance with Smart India Hackathon (SIH) Figures of Merit.
-- Live Jury Sandbox: Pre-built scenarios, random environment generator, and custom CSV upload.
+- Live Interactive Testbench: Pre-built scenarios, random environment generator, and custom CSV upload.
 """
 
 from typing import Dict, Any, Optional, Tuple, List
@@ -187,13 +187,13 @@ st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 
 # -----------------------------------------------------------------------------
-# 2. SIDEBAR CONFIGURATION & JURY SANDBOX
+# 2. SIDEBAR CONFIGURATION & TACTICAL TESTBENCH
 # -----------------------------------------------------------------------------
 st.sidebar.markdown(
     """
     <div style="text-align: center; margin-bottom: 1rem;">
         <span class="tactical-badge">SIH EW-C2 COGNITIVE SUITE</span>
-        <h3 style="color: #00f0ff; margin-top: 0.4rem; font-family: monospace;">JURY SANDBOX</h3>
+        <h3 style="color: #00f0ff; margin-top: 0.4rem; font-family: monospace;">TACTICAL TESTBENCH</h3>
     </div>
     """,
     unsafe_allow_html=True
@@ -304,7 +304,7 @@ with st.sidebar.expander("Algorithms & Co-Prime Pacing", expanded=False):
     ql_epsilon = st.slider("Initial Epsilon (explore)", min_value=0.10, max_value=0.60, value=0.30, step=0.05)
 
 st.sidebar.markdown("---")
-uploaded_file = st.sidebar.file_uploader("📂 Upload Custom Jury Matrix (CSV)", type=["csv"], help="Upload your own custom T x C binary transmission matrix (0=Silent, 1=Active).")
+uploaded_file = st.sidebar.file_uploader("📂 Upload Custom RF Matrix (CSV)", type=["csv"], help="Upload your own custom T x C binary transmission matrix (0=Silent, 1=Active).")
 
 st.sidebar.button("⚡ EXECUTE EW SIMULATION", use_container_width=True, type="primary")
 

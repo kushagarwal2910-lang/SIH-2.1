@@ -228,7 +228,7 @@ export const App: React.FC = () => {
           <button
             onClick={() => setIsIngestOpen(true)}
             className="px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white font-medium rounded-md text-[11px] transition cursor-pointer"
-            title="Upload Custom Matrix (Jury Sandbox)"
+            title="Upload Custom RF Matrix (Interactive Testbench)"
           >
             INGEST
           </button>
@@ -278,7 +278,7 @@ export const App: React.FC = () => {
                 <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
                   Tactical RF Scenarios
                 </span>
-                <span className="text-[9px] text-zinc-500">Jury Presets</span>
+                <span className="text-[9px] text-zinc-500">Threat Presets</span>
               </div>
               <div className="grid grid-cols-2 gap-1.5">
                 {[

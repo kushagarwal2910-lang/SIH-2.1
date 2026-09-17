@@ -154,15 +154,15 @@ Threat Class Matrix Representation:
 • Class 4 (Spatial)  : 360° rotating directional radar antenna mainlobe sweeps
 ```
 
-### Jury Sandbox & Custom Test Vector Upload
-Judges and evaluators can validate algorithm resilience across non-stationary RF environments:
+### Tactical Testbench & Custom Test Vector Upload
+Engineers and defense evaluators can validate algorithm resilience across non-stationary RF environments:
 1. **Pre-configured Military Scenarios:**
    - *Integrated Air Defense System (IADS) Network:* Coordinated surveillance and tracking radars.
    - *Dense Radar Network:* High pulse density surveillance environment.
    - *Agile Frequency-Hopper Net:* Fast hopping FHSS communications network.
    - *Stealth Pop-Up Threat:* Low-probability-of-intercept (LPI) missile guidance illuminations.
 2. **Dynamic RNG Seed Rerolling:** Instantly proceduralize a completely new battlefield topology.
-3. **Custom CSV Test Matrix Upload:** Evaluators can inject their own custom $T \times C$ binary transmission matrix directly through the UI.
+3. **Custom CSV Test Matrix Upload:** Operators can inject their own custom $T \times C$ binary transmission matrix directly through the UI.
 
 ---
 
