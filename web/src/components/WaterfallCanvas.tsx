@@ -15,7 +15,7 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
   selectedLog,
   currentStep,
   onSeek,
-  height = 360
+  height = 320
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -33,24 +33,24 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
   const T = env.config.numSteps;
   const C = env.config.numChannels;
 
-  // Colors
+  // Tactical military color scheme
   const COLORS = {
-    empty: '#09090b',
-    periodic: '#1d4ed8',      // Blue
-    agile: '#d97706',         // Amber
-    sporadic: '#e11d48',      // Rose / Red (High Threat)
-    spatial: '#9333ea',       // Purple
-    hit: '#10b981',           // Emerald
-    dwell: '#38bdf8',         // Light cyan
-    cursor: '#ffffff'
+    empty: '#070a13',
+    periodic: '#2563eb',       // Class 1: Periodic Surveillance Radar (Royal Blue)
+    agile: '#d97706',          // Class 2: Frequency-Hopper (Amber)
+    sporadic: '#e11d48',       // Class 3: Pop-Up Missile Radar (Lethal Crimson)
+    spatial: '#9333ea',        // Class 4: Spatially Rotating Radar (Violet)
+    hit: '#10b981',            // Direct Interception (Glowing Emerald)
+    dwell: '#38bdf8',          // Receiver Look (Sky Cyan)
+    grid: 'rgba(30, 41, 59, 0.35)'
   };
 
   const threatLabels: Record<number, string> = {
     [EmitterClass.EMPTY]: 'Quiet Spectrum (Noise Floor)',
-    [EmitterClass.PERIODIC]: 'Class 1: Surveillance Radar (Periodic)',
-    [EmitterClass.AGILE]: 'Class 2: Frequency-Hopper (FHSS)',
-    [EmitterClass.SPORADIC]: 'Class 3: High-Threat Missile Radar',
-    [EmitterClass.SPATIAL_SCAN]: 'Class 4: Spatially Rotating Radar'
+    [EmitterClass.PERIODIC]: 'Class 1: Surveillance Radar (Fixed PRI)',
+    [EmitterClass.AGILE]: 'Class 2: Frequency-Hopper (FHSS Net)',
+    [EmitterClass.SPORADIC]: 'Class 3: High-Threat Missile Lock (Pop-Up)',
+    [EmitterClass.SPATIAL_SCAN]: 'Class 4: Spatially Rotating Radar (360°)'
   };
 
   const draw = useCallback(() => {
@@ -62,14 +62,14 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
     const width = canvas.width;
     const canvasHeight = canvas.height;
 
-    // Clear background
-    ctx.fillStyle = '#09090b';
+    // Background
+    ctx.fillStyle = COLORS.empty;
     ctx.fillRect(0, 0, width, canvasHeight);
 
     const cellWidth = width / T;
     const cellHeight = canvasHeight / C;
 
-    // 1. Draw Spectrum Heatmap
+    // 1. Draw Ground-Truth Spectrum Activity
     for (let t = 0; t < T; t++) {
       for (let c = 0; c < C; c++) {
         const val = env.getCell(t, c);
@@ -86,49 +86,61 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
       }
     }
 
-    // 2. Draw Receiver Dwells (historical up to currentStep)
-    const renderLimit = Math.min(T, currentStep + 1);
-    ctx.fillStyle = 'rgba(56, 189, 248, 0.45)';
-    for (let t = 0; t < renderLimit; t++) {
-      const ch = selectedLog.actions[t];
-      const y = (C - 1 - ch) * cellHeight + cellHeight * 0.25;
-      ctx.fillRect(t * cellWidth, y, Math.max(1.5, cellWidth), cellHeight * 0.5);
+    // 2. Draw Subtle Channel Grid Lines (every 4 or 8 channels)
+    ctx.strokeStyle = COLORS.grid;
+    ctx.lineWidth = 0.5;
+    const gridInterval = C <= 32 ? 4 : 8;
+    for (let c = 0; c < C; c += gridInterval) {
+      const y = (C - 1 - c) * cellHeight;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
     }
 
-    // 3. Draw Interception Hits
+    // 3. Draw Receiver Dwells (historical trajectory up to currentStep)
+    const renderLimit = Math.min(T, currentStep + 1);
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.40)';
+    for (let t = 0; t < renderLimit; t++) {
+      const ch = selectedLog.actions[t];
+      const y = (C - 1 - ch) * cellHeight + cellHeight * 0.2;
+      ctx.fillRect(t * cellWidth, y, Math.max(1.5, cellWidth), cellHeight * 0.6);
+    }
+
+    // 4. Draw Interception Hits
     ctx.fillStyle = COLORS.hit;
     for (let t = 0; t < renderLimit; t++) {
       if (selectedLog.detections[t] === 1) {
         const ch = selectedLog.actions[t];
         const cx = t * cellWidth + cellWidth / 2;
         const cy = (C - 1 - ch) * cellHeight + cellHeight / 2;
-        const radius = Math.min(cellHeight * 0.45, 4.5);
+        const radius = Math.min(cellHeight * 0.45, 5);
 
         ctx.beginPath();
-        ctx.arc(cx, cy, Math.max(2, radius), 0, Math.PI * 2);
+        ctx.arc(cx, cy, Math.max(2.5, radius), 0, Math.PI * 2);
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1.2;
         ctx.stroke();
       }
     }
 
-    // 4. Draw Live Playhead Line
+    // 5. Draw Live Playhead Line
     const playheadX = currentStep * cellWidth;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.strokeStyle = '#00f0ff';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(playheadX, 0);
     ctx.lineTo(playheadX, canvasHeight);
     ctx.stroke();
 
-    // Highlight active dwell at playhead
+    // Active look crosshair at playhead
     if (currentStep < T) {
       const activeCh = selectedLog.actions[currentStep];
       const activeY = (C - 1 - activeCh) * cellHeight;
-      ctx.strokeStyle = '#38bdf8';
+      ctx.strokeStyle = '#00f0ff';
       ctx.lineWidth = 2;
-      ctx.strokeRect(playheadX - 3, activeY, Math.max(cellWidth, 6), cellHeight);
+      ctx.strokeRect(playheadX - 4, activeY - 1, Math.max(cellWidth + 8, 12), cellHeight + 2);
     }
   }, [env, selectedLog, currentStep, T, C]);
 
@@ -179,7 +191,7 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
   };
 
   return (
-    <div ref={containerRef} className="canvas-wrapper" style={{ height }}>
+    <div ref={containerRef} className="relative w-full rounded-xl overflow-hidden border border-slate-800 bg-slate-950/80 shadow-2xl" style={{ height }}>
       <canvas
         ref={canvasRef}
         onPointerDown={(e) => {
@@ -188,47 +200,35 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
         }}
         onPointerMove={handlePointer}
         onPointerLeave={() => setHoverInfo(null)}
-        className="canvas-element"
+        className="w-full h-full cursor-crosshair block"
       />
 
-      {/* Modern Floating Hover Glass Tooltip */}
+      {/* Floating Inspection Tooltip */}
       {hoverInfo && (
         <div
+          className="absolute pointer-events-none z-30 transform -translate-x-1/2 -translate-y-full mb-2 px-3 py-2 bg-slate-900/95 border border-slate-700 rounded-lg shadow-2xl backdrop-blur-md text-[11px] font-mono text-slate-200"
           style={{
-            position: 'absolute',
-            pointerEvents: 'none',
-            zIndex: 30,
-            transform: 'translate(-50%, -100%)',
-            marginBottom: '10px',
-            padding: '8px 12px',
-            backgroundColor: 'rgba(24, 24, 27, 0.95)',
-            border: '1px solid #3f3f46',
-            borderRadius: '8px',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
-            backdropFilter: 'blur(8px)',
-            fontSize: '0.75rem',
-            fontFamily: 'var(--font-mono)',
-            left: Math.max(120, Math.min((canvasRef.current?.width || 300) - 120, hoverInfo.x)),
-            top: Math.max(70, hoverInfo.y)
+            left: Math.max(100, Math.min((canvasRef.current?.width || 300) - 100, hoverInfo.x)),
+            top: Math.max(60, hoverInfo.y)
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span style={{ color: '#a1a1aa' }}>Step:</span>
-            <span style={{ color: '#ffffff', fontWeight: 700 }}>{hoverInfo.step}</span>
-            <span style={{ color: '#52525b' }}>|</span>
-            <span style={{ color: '#a1a1aa' }}>Ch:</span>
-            <span style={{ color: '#ffffff', fontWeight: 700 }}>{hoverInfo.channel}</span>
+          <div className="flex items-center gap-2 mb-1 border-b border-slate-800 pb-1">
+            <span className="text-slate-400">Epoch:</span>
+            <span className="text-white font-bold">{hoverInfo.step}</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-400">Channel:</span>
+            <span className="text-cyan-400 font-bold">Ch {hoverInfo.channel}</span>
           </div>
-          <div style={{ color: '#e4e4e7', marginBottom: '4px' }}>
-            {threatLabels[hoverInfo.threatClass] || 'Quiet'}
+          <div className="text-slate-300 font-sans text-[10px] mb-1">
+            {threatLabels[hoverInfo.threatClass] || 'Quiet Spectrum'}
           </div>
           {hoverInfo.isIntercepted ? (
-            <div style={{ color: '#34d399', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span>●</span> DIRECT INTERCEPT HIT
+            <div className="text-emerald-400 font-bold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> DIRECT INTERCEPT HIT!
             </div>
           ) : hoverInfo.receiverHere ? (
-            <div style={{ color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span>○</span> Receiver Dwell (No Signal)
+            <div className="text-cyan-300 flex items-center gap-1 text-[10px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Sensor Dwell Look
             </div>
           ) : null}
         </div>

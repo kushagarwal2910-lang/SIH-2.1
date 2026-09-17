@@ -21,69 +21,75 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({
   if (!sweep || !ql) return null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
+    <div className="space-y-4 w-full text-xs">
       {/* 4 Strategy Comparison Cards */}
-      <div className="strategy-grid">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           {
             key: 'Sequential Sweep (Baseline)',
             m: sweep,
-            badgeClass: 'badge-rose',
-            label: 'Baseline Sweep',
-            desc: 'Fixed open-loop circle scan'
+            color: 'border-rose-500/40 text-rose-400 bg-rose-950/20',
+            badgeBg: 'bg-rose-950 text-rose-400 border border-rose-800',
+            label: '1. Baseline Sweep',
+            desc: 'Legacy open-loop circle scan'
           },
           {
             key: 'Co-Prime Sweeper (Optimal Scan)',
             m: coprime,
-            badgeClass: 'badge-purple',
-            label: 'Co-Prime Sweeper',
-            desc: 'Chinese Remainder Theorem scan'
+            color: 'border-purple-500/40 text-purple-400 bg-purple-950/20',
+            badgeBg: 'bg-purple-950 text-purple-400 border border-purple-800',
+            label: '2. Co-Prime Sweeper',
+            desc: 'Chinese Remainder Theorem'
           },
           {
             key: 'UCB1 Bandit (ML 1)',
             m: ucb,
-            badgeClass: 'badge-amber',
-            label: 'UCB1 Bandit',
-            desc: 'Online exploration vs exploitation'
+            color: 'border-amber-500/40 text-amber-400 bg-amber-950/20',
+            badgeBg: 'bg-amber-950 text-amber-400 border border-amber-800',
+            label: '3. UCB1 Bandit',
+            desc: 'Online explore vs exploit'
           },
           {
             key: 'Q-Learning Dwell Agent (ML 2)',
             m: ql,
-            badgeClass: 'badge-emerald',
-            label: 'Cognitive Q-Learning',
+            color: 'border-emerald-500/40 text-emerald-400 bg-emerald-950/20',
+            badgeBg: 'bg-emerald-950 text-emerald-400 border border-emerald-800',
+            label: '4. Cognitive Q-Learning',
             desc: 'Adaptive reinforcement policy'
           }
-        ].map(({ key, m, badgeClass, label, desc }) => {
+        ].map(({ key, m, color, badgeBg, label, desc }) => {
           if (!m) return null;
           const isSelected = activeScheduler === key;
           return (
             <div
               key={key}
               onClick={() => onSelectScheduler(key)}
-              className={`strategy-card ${isSelected ? 'selected' : ''}`}
+              className={`p-3.5 rounded-xl border transition cursor-pointer flex flex-col justify-between ${
+                isSelected
+                  ? 'bg-slate-800/90 border-cyan-400 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-400'
+                  : 'bg-slate-900/60 hover:bg-slate-900 border-slate-800'
+              }`}
             >
-              <div className="strategy-card-top">
+              <div className="flex items-start justify-between gap-2 mb-2">
                 <div>
-                  <div className="strategy-name">{label}</div>
-                  <div className="strategy-desc">{desc}</div>
+                  <div className="font-mono font-bold text-xs text-white">{label}</div>
+                  <div className="text-[10px] text-slate-400 leading-tight">{desc}</div>
                 </div>
-                <span className={`badge ${badgeClass}`}>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${badgeBg}`}>
                   {m.interceptionEfficiencyRatio.toFixed(2)}x
                 </span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                <span className="strategy-hits">{m.totalDetections}</span>
-                <span style={{ fontSize: '0.75rem', color: '#71717a', fontFamily: 'var(--font-mono)' }}>intercepts</span>
+              <div className="flex items-baseline gap-2 mb-2">
+                <span className="text-xl font-mono font-extrabold text-white">{m.totalDetections}</span>
+                <span className="text-[10px] text-slate-400 font-mono">threat intercepts</span>
               </div>
 
-              <div className="strategy-meta-grid">
-                <div className="strategy-meta-item">
-                  Pd: <strong>{(m.pDSlot * 100).toFixed(1)}%</strong>
-                </div>
-                <div className="strategy-meta-item">
-                  Latency: <strong>{m.meanTti.toFixed(1)} ep</strong>
-                </div>
+              <div className="grid grid-cols-2 gap-1.5 pt-2 border-t border-slate-800/80 text-[10px] font-mono text-slate-400">
+                <div>Pd: <strong className="text-slate-200">{(m.pDSlot * 100).toFixed(1)}%</strong></div>
+                <div>Mean Latency: <strong className="text-slate-200">{m.meanTti.toFixed(1)} ep</strong></div>
+                <div>Pred Acc: <strong className="text-emerald-400">{m.percentageCorrectPredictions.toFixed(0)}%</strong></div>
+                <div>Missile Pd: <strong className="text-rose-400">{(m.pDSporadic * 100).toFixed(1)}%</strong></div>
               </div>
             </div>
           );
@@ -91,56 +97,63 @@ export const MetricsDashboard: React.FC<MetricsDashboardProps> = ({
       </div>
 
       {/* Figures of Merit Benchmark Data Table */}
-      <div className="table-card">
-        <div className="table-header">
-          <div className="table-title">
-            <Target size={16} style={{ color: '#60a5fa' }} />
-            <span>SIH ELECTRONIC SUPPORT MEASURES // FIGURES OF MERIT (FOM)</span>
+      <div className="rounded-xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xl">
+        <div className="px-4 py-2.5 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+          <div className="flex items-center gap-2">
+            <Target size={15} className="text-cyan-400" />
+            <span className="font-mono font-bold text-xs uppercase tracking-wider text-slate-200">
+              SIH ELECTRONIC SUPPORT MEASURES // FIGURES OF MERIT (FOM) SCORECARD
+            </span>
           </div>
-          <span className="badge badge-zinc">Contested Spectrum Ground Truth</span>
+          <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-slate-800 text-slate-400 border border-slate-700">
+            Contested RF Ground Truth
+          </span>
         </div>
 
-        <div className="table-responsive-container">
-          <table className="fom-table">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs font-mono">
             <thead>
-              <tr>
-                <th>Strategy</th>
-                <th>Overall Pd</th>
-                <th>Missile Radar Pd</th>
-                <th>Spatial Scan Pd</th>
-                <th>False Alarm (Pfa)</th>
-                <th>Mean Latency</th>
-                <th>Prediction Acc</th>
-                <th>Time Error</th>
-                <th style={{ textAlign: 'right' }}>Efficiency Multiplier</th>
+              <tr className="border-b border-slate-800 bg-slate-950/80 text-[10px] text-slate-400 uppercase tracking-wider">
+                <th className="py-2.5 px-3">Scheduling Strategy</th>
+                <th className="py-2.5 px-3">Overall Pd</th>
+                <th className="py-2.5 px-3">Missile Lock Pd</th>
+                <th className="py-2.5 px-3">Spatial Scan Pd</th>
+                <th className="py-2.5 px-3">False Alarm (Pfa)</th>
+                <th className="py-2.5 px-3">Mean Latency</th>
+                <th className="py-2.5 px-3">Prediction Acc</th>
+                <th className="py-2.5 px-3">Time Error</th>
+                <th className="py-2.5 px-3 text-right">Efficiency Multiplier</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-800/60">
               {Object.values(metrics).map((m) => {
                 const isSelected = activeScheduler === m.schedulerName;
                 return (
                   <tr
                     key={m.schedulerName}
                     onClick={() => onSelectScheduler(m.schedulerName)}
-                    className={isSelected ? 'selected' : ''}
-                    style={{ cursor: 'pointer' }}
+                    className={`cursor-pointer transition ${
+                      isSelected
+                        ? 'bg-slate-800/80 text-white font-semibold'
+                        : 'hover:bg-slate-850 text-slate-300'
+                    }`}
                   >
-                    <td style={{ color: isSelected ? '#ffffff' : '#f4f4f5' }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <td className="py-2.5 px-3">
+                      <div className="flex items-center gap-2">
                         {isSelected && (
-                          <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#60a5fa' }} />
+                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400"></span>
                         )}
-                        {m.schedulerName}
-                      </span>
+                        <span>{m.schedulerName}</span>
+                      </div>
                     </td>
-                    <td style={{ fontWeight: 600 }}>{(m.pDSlot * 100).toFixed(1)}%</td>
-                    <td style={{ color: '#fb7185' }}>{(m.pDSporadic * 100).toFixed(1)}%</td>
-                    <td style={{ color: '#c084fc' }}>{(m.pDSpatial * 100).toFixed(1)}%</td>
-                    <td style={{ color: '#a1a1aa' }}>{(m.pFa * 100).toFixed(2)}%</td>
-                    <td>{m.meanTti.toFixed(2)} ep</td>
-                    <td style={{ color: '#34d399' }}>{m.percentageCorrectPredictions.toFixed(1)}%</td>
-                    <td style={{ color: '#a1a1aa' }}>{m.averageInterceptTimeError.toFixed(1)} ep</td>
-                    <td style={{ textAlign: 'right', fontWeight: 800, color: '#60a5fa' }}>
+                    <td className="py-2.5 px-3 font-bold text-slate-100">{(m.pDSlot * 100).toFixed(1)}%</td>
+                    <td className="py-2.5 px-3 text-rose-400 font-bold">{(m.pDSporadic * 100).toFixed(1)}%</td>
+                    <td className="py-2.5 px-3 text-purple-400">{(m.pDSpatial * 100).toFixed(1)}%</td>
+                    <td className="py-2.5 px-3 text-slate-400">{(m.pFa * 100).toFixed(2)}%</td>
+                    <td className="py-2.5 px-3">{m.meanTti.toFixed(2)} ep</td>
+                    <td className="py-2.5 px-3 text-emerald-400">{(m.percentageCorrectPredictions).toFixed(1)}%</td>
+                    <td className="py-2.5 px-3 text-slate-400">{m.averageInterceptTimeError.toFixed(1)} ep</td>
+                    <td className="py-2.5 px-3 text-right font-extrabold text-cyan-400">
                       {m.interceptionEfficiencyRatio.toFixed(2)}x
                     </td>
                   </tr>
