@@ -1,25 +1,4 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import {
-  Radio,
-  Sliders,
-  Download,
-  BookOpen,
-  RefreshCw,
-  Target,
-  BarChart3,
-  Shield,
-  Layers,
-  X,
-  Zap,
-  Menu,
-  CheckCircle2,
-  Upload,
-  Activity,
-  Radar,
-  Flame,
-  Clock,
-  Sparkles
-} from 'lucide-react';
 
 import {
   RFEnvironment,
@@ -45,7 +24,7 @@ export const App: React.FC = () => {
   // Navigation View: 'waterfall' | 'metrics' | 'theory' | 'telemetry'
   const [activeTab, setActiveTab] = useState<'waterfall' | 'metrics' | 'theory' | 'telemetry'>('waterfall');
 
-  // Sidebar visibility
+  // Sidebar visibility (toggled on desktop & mobile)
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
   // Configuration State
@@ -204,176 +183,166 @@ export const App: React.FC = () => {
   const isCurrentIntercept = currentLog.detections[currentStep] === 1;
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-slate-950 text-slate-100 antialiased overflow-hidden select-none font-sans">
-      {/* 1. TOP COCKPIT NAVIGATION HEADER (Matches odvp.vercel.app style) */}
-      <header className="h-14 bg-slate-950/90 border-b border-slate-800 flex items-center justify-between px-2.5 sm:px-4 z-30 shrink-0">
+    <div className="h-screen w-screen flex flex-col bg-black text-zinc-100 antialiased overflow-hidden select-none font-sans">
+      {/* 1. TOP COCKPIT NAVIGATION HEADER (Text-Only, Black & White) */}
+      <header className="h-14 bg-black border-b border-zinc-800 flex items-center justify-between px-3 sm:px-4 z-30 shrink-0">
         <div className="flex items-center space-x-2 sm:space-x-3">
           {/* Sidebar Toggle Button */}
           <button
             onClick={() => setIsSidebarOpen((prev) => !prev)}
-            className="p-1.5 sm:p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-cyan-400 text-cyan-400 transition cursor-pointer flex items-center gap-1.5"
+            className="px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 transition cursor-pointer font-mono text-[11px] font-bold"
             title="Toggle Control Drawer"
           >
-            <Menu size={16} />
-            <span className="hidden sm:inline text-[11px] font-semibold text-slate-200">Controls</span>
+            {isSidebarOpen ? '[HIDE CONTROLS]' : '[SHOW CONTROLS]'}
           </button>
 
-          {/* Logo Badge */}
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-inner">
-            <Radio size={18} />
-          </div>
-
+          {/* Project Title (Text-Only, No Logo Icons) */}
           <div>
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <h1 className="font-bold text-[11px] sm:text-xs tracking-wider uppercase text-white font-mono">
-                AERO-SCAN <span className="text-cyan-400">COGNITIVE EW C2</span>
-              </h1>
-              <span className="px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-mono bg-cyan-950 text-cyan-400 border border-cyan-800/60">
+              <span className="font-bold text-xs sm:text-sm tracking-wider uppercase text-white font-mono">
+                AERO-SCAN <span className="text-zinc-400">//</span> COGNITIVE EW C2
+              </span>
+              <span className="px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-mono bg-zinc-900 text-zinc-300 border border-zinc-700">
                 SIH-2.1
               </span>
-              <span className="hidden md:inline px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-950 text-emerald-400 border border-emerald-800/60">
+              <span className="hidden md:inline px-1.5 py-0.5 rounded text-[9px] font-mono bg-zinc-900 text-zinc-300 border border-zinc-700">
                 DRDO ESM
               </span>
             </div>
-            <p className="hidden lg:block text-[10px] text-slate-400">
-              Ministry of Defence • Cognitive Electronic Support Measures Adaptive Scan Engine
+            <p className="hidden lg:block text-[10px] text-zinc-500 font-mono">
+              Electronic Support Measures • Closed-Loop Dynamic Scan Scheduler
             </p>
           </div>
         </div>
 
-        {/* Right Header Quick-Stats & Action Buttons */}
-        <div className="flex items-center space-x-1 sm:space-x-2">
+        {/* Right Header Quick-Stats & Monochrome Action Buttons */}
+        <div className="flex items-center space-x-1.5 sm:space-x-2 font-mono text-xs">
           {/* Quick-Stats Telemetry Bar */}
-          <div className="hidden xl:flex items-center space-x-3 text-[11px] font-mono text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800">
-            <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Spectrum: {config.numChannels} Channels
-            </span>
-            <span className="text-slate-600">|</span>
-            <span className="text-cyan-400">MDS: {config.receiverMdsDbm.toFixed(0)} dBm</span>
-            <span className="text-slate-600">|</span>
-            <span className="text-amber-400">Compute: {computeTimeMs.toFixed(1)}ms Local</span>
+          <div className="hidden xl:flex items-center space-x-3 text-[11px] text-zinc-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800">
+            <span>Spectrum: <strong className="text-white">{config.numChannels} Channels</strong></span>
+            <span className="text-zinc-600">|</span>
+            <span>MDS: <strong className="text-white">{config.receiverMdsDbm.toFixed(0)} dBm</strong></span>
+            <span className="text-zinc-600">|</span>
+            <span>Compute: <strong className="text-white">{computeTimeMs.toFixed(1)}ms Local</strong></span>
           </div>
 
-          {/* Ingest Custom Matrix */}
+          {/* Ingest Matrix Button */}
           <button
             onClick={() => setIsIngestOpen(true)}
-            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-cyan-500/60 text-slate-200 font-semibold rounded-lg text-[11px] sm:text-xs transition cursor-pointer"
+            className="px-2.5 sm:px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-semibold rounded-lg text-[11px] sm:text-xs transition cursor-pointer"
             title="Upload Custom Matrix (Jury Sandbox)"
           >
-            <Upload size={13} className="text-cyan-400" />
-            <span className="hidden sm:inline">Ingest</span>
+            INGEST
           </button>
 
-          {/* Radar Math Theory */}
+          {/* Radar Math Theory Button */}
           <button
             onClick={() => setIsTheoryOpen(true)}
-            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-purple-500/60 text-slate-200 font-semibold rounded-lg text-[11px] sm:text-xs transition cursor-pointer"
+            className="px-2.5 sm:px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-semibold rounded-lg text-[11px] sm:text-xs transition cursor-pointer"
             title="Wiley-Richards & Co-Prime Radar Math"
           >
-            <BookOpen size={13} className="text-purple-400" />
-            <span className="hidden sm:inline">Theory</span>
+            THEORY
           </button>
 
-          {/* Export CSV */}
+          {/* Export CSV Button */}
           <button
             onClick={downloadTelemetryCsv}
-            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500/60 text-slate-200 font-semibold rounded-lg text-[11px] sm:text-xs transition cursor-pointer"
+            className="px-2.5 sm:px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-semibold rounded-lg text-[11px] sm:text-xs transition cursor-pointer"
             title="Download Telemetry CSV"
           >
-            <Download size={13} className="text-emerald-400" />
-            <span className="hidden sm:inline">Export</span>
+            EXPORT
           </button>
 
-          {/* Reroll Battlefield Seed */}
+          {/* Reroll Seed Button (Crisp White/Black contrast) */}
           <button
             onClick={rerollSeed}
-            className="flex items-center gap-1 px-2.5 sm:px-3.5 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold rounded-lg text-[11px] sm:text-xs shadow-lg transition transform active:scale-95 cursor-pointer"
+            className="px-3 sm:px-3.5 py-1.5 bg-white hover:bg-zinc-200 text-black font-bold rounded-lg text-[11px] sm:text-xs shadow-md transition active:scale-95 cursor-pointer"
             title="Proceduralize New Random Battlefield Seed"
           >
-            <RefreshCw size={13} />
-            <span className="hidden xs:inline">Reroll Seed</span>
+            REROLL SEED
           </button>
         </div>
       </header>
 
       {/* 2. MAIN VIEWPORT LAYOUT */}
       <div className="flex flex-1 relative overflow-hidden">
-        {/* Left Sidebar: Controls Drawer (Docked on desktop, toggleable) */}
+        {/* Mobile Sidebar Backdrop */}
         {isSidebarOpen && (
-          <aside className="w-72 sm:w-80 border-r border-slate-800 bg-slate-950/80 backdrop-blur-md flex flex-col p-3.5 space-y-3.5 overflow-y-auto custom-scrollbar shrink-0 shadow-2xl z-20">
-            {/* Section 1: Scenario Presets */}
+          <div
+            onClick={() => setIsSidebarOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs z-20 md:hidden"
+          />
+        )}
+
+        {/* Left Sidebar: Controls Drawer */}
+        {isSidebarOpen && (
+          <aside className="fixed md:static inset-y-14 left-0 w-72 sm:w-80 border-r border-zinc-800 bg-black md:bg-zinc-950 flex flex-col p-3.5 space-y-3.5 overflow-y-auto custom-scrollbar shrink-0 shadow-2xl z-30 font-mono text-xs">
+            {/* Section 1: Tactical Scenarios */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
                   Tactical RF Scenarios
                 </span>
-                <span className="text-[9px] font-mono text-cyan-400">Jury Presets</span>
+                <span className="text-[9px] text-zinc-500">Jury Presets</span>
               </div>
               <div className="grid grid-cols-2 gap-1.5">
                 {[
-                  { id: 'IADS', label: 'Air Defense', icon: Shield, desc: 'Coordinated radar net' },
-                  { id: 'SURVEILLANCE', label: 'Dense Radars', icon: Radar, desc: 'High pulse density' },
-                  { id: 'AGILE_HOPPER', label: 'Agile FHSS', icon: Zap, desc: 'Rapid hoppers' },
-                  { id: 'MISSILE_LOCK', label: 'Missile Lock', icon: Flame, desc: 'Lethal pop-up' }
-                ].map(({ id, label, icon: Icon, desc }) => (
+                  { id: 'IADS', label: 'Air Defense', desc: 'Coordinated radar net' },
+                  { id: 'SURVEILLANCE', label: 'Dense Radars', desc: 'High pulse density' },
+                  { id: 'AGILE_HOPPER', label: 'Agile FHSS', desc: 'Rapid hoppers' },
+                  { id: 'MISSILE_LOCK', label: 'Missile Lock', desc: 'Lethal pop-up' }
+                ].map(({ id, label, desc }) => (
                   <button
                     key={id}
                     onClick={() => applyScenario(id)}
-                    className={`p-2 rounded-lg text-left transition border ${
+                    className={`p-2 rounded-lg text-left transition border cursor-pointer ${
                       activeScenario === id
-                        ? 'bg-slate-800/90 border-cyan-400 text-white shadow-sm'
-                        : 'bg-slate-900/60 border-slate-800/80 text-slate-300 hover:bg-slate-850'
+                        ? 'bg-zinc-800 border-zinc-300 text-white font-bold'
+                        : 'bg-zinc-950 border-zinc-850 text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
                     }`}
                   >
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <Icon size={12} className={activeScenario === id ? 'text-cyan-400' : 'text-slate-400'} />
-                      <span className="text-[11px] font-semibold">{label}</span>
-                    </div>
-                    <div className="text-[9px] text-slate-500 leading-tight">{desc}</div>
+                    <div className="text-[11px] mb-0.5">{label}</div>
+                    <div className="text-[9px] text-zinc-500 leading-tight font-sans">{desc}</div>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Section 2: Active Scheduling Strategy */}
+            {/* Section 2: Active Cognitive Schedulers */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
                   Receiver Schedulers
                 </span>
-                <span className="text-[9px] font-mono text-emerald-400">4 Algorithms</span>
+                <span className="text-[9px] text-zinc-500">4 Algorithms</span>
               </div>
               <div className="space-y-1.5">
                 {[
                   {
                     name: 'Sequential Sweep (Baseline)',
-                    short: 'Baseline Sweep (Legacy)',
+                    short: '1. Baseline Sweep (Legacy)',
                     gain: '1.00x',
-                    tag: 'Rigid Circle',
-                    color: 'text-rose-400'
+                    tag: 'Open-Loop Linear Scan'
                   },
                   {
                     name: 'Co-Prime Sweeper (Optimal Scan)',
-                    short: 'Co-Prime Sweeper (CRT)',
+                    short: '2. Co-Prime Sweeper',
                     gain: `${(metrics['Co-Prime Sweeper (Optimal Scan)']?.interceptionEfficiencyRatio || 1.12).toFixed(2)}x`,
-                    tag: 'Chinese Remainder',
-                    color: 'text-purple-400'
+                    tag: 'Chinese Remainder Theorem'
                   },
                   {
                     name: 'UCB1 Bandit (ML 1)',
-                    short: 'UCB1 Bandit (ML 1)',
+                    short: '3. UCB1 Bandit (ML 1)',
                     gain: `${(metrics['UCB1 Bandit (ML 1)']?.interceptionEfficiencyRatio || 1.48).toFixed(2)}x`,
-                    tag: 'Non-Stationary',
-                    color: 'text-amber-400'
+                    tag: 'Explore vs Exploit Policy'
                   },
                   {
                     name: 'Q-Learning Dwell Agent (ML 2)',
-                    short: 'Q-Learning Agent (ML 2)',
+                    short: '4. Cognitive Q-Learning',
                     gain: `${(metrics['Q-Learning Dwell Agent (ML 2)']?.interceptionEfficiencyRatio || 1.60).toFixed(2)}x`,
-                    tag: 'Reinforcement Learning',
-                    color: 'text-emerald-400'
+                    tag: 'Reinforcement Learning'
                   }
-                ].map(({ name, short, gain, tag, color }) => {
+                ].map(({ name, short, gain, tag }) => {
                   const isSelected = activeSchedulerName === name;
                   return (
                     <div
@@ -381,17 +350,17 @@ export const App: React.FC = () => {
                       onClick={() => setActiveSchedulerName(name)}
                       className={`p-2.5 rounded-lg border transition cursor-pointer flex items-center justify-between ${
                         isSelected
-                          ? 'bg-slate-800/90 border-cyan-400 ring-1 ring-cyan-400/50'
-                          : 'bg-slate-900/50 border-slate-800/80 hover:bg-slate-850'
+                          ? 'bg-zinc-800 border-zinc-300 ring-1 ring-zinc-300'
+                          : 'bg-zinc-950 border-zinc-850 hover:bg-zinc-900'
                       }`}
                     >
                       <div>
-                        <div className="flex items-center gap-1.5">
-                          <span className={`text-[11px] font-bold ${color}`}>{short}</span>
-                        </div>
-                        <div className="text-[9px] text-slate-500 font-mono">{tag}</div>
+                        <div className="text-[11px] font-bold text-white">{short}</div>
+                        <div className="text-[9px] text-zinc-500 font-sans">{tag}</div>
                       </div>
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-950 text-cyan-400 border border-slate-800">
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${
+                        isSelected ? 'bg-white text-black' : 'bg-zinc-900 text-zinc-300 border border-zinc-800'
+                      }`}>
                         {gain}
                       </span>
                     </div>
@@ -400,15 +369,15 @@ export const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Section 3: Sensor Parameters */}
-            <div className="pt-2 border-t border-slate-800/80 space-y-2.5">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
+            {/* Section 3: Physical Parameters */}
+            <div className="pt-2 border-t border-zinc-800 space-y-2.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block">
                 Physical Sensor Parameters
               </span>
 
               <div>
-                <div className="flex justify-between text-[10px] font-mono text-slate-400 mb-1">
-                  <span>Channels ($C$):</span>
+                <div className="flex justify-between text-[10px] text-zinc-400 mb-1">
+                  <span>Channels (C):</span>
                   <span className="text-white font-bold">{config.numChannels} Bands</span>
                 </div>
                 <input
@@ -418,14 +387,14 @@ export const App: React.FC = () => {
                   step={4}
                   value={config.numChannels}
                   onChange={(e) => setConfig((prev) => ({ ...prev, numChannels: Number(e.target.value) }))}
-                  className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                  className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-white"
                 />
               </div>
 
               <div>
-                <div className="flex justify-between text-[10px] font-mono text-slate-400 mb-1">
+                <div className="flex justify-between text-[10px] text-zinc-400 mb-1">
                   <span>Sensitivity (MDS):</span>
-                  <span className="text-cyan-400 font-bold">{config.receiverMdsDbm.toFixed(0)} dBm</span>
+                  <span className="text-white font-bold">{config.receiverMdsDbm.toFixed(0)} dBm</span>
                 </div>
                 <input
                   type="range"
@@ -434,14 +403,14 @@ export const App: React.FC = () => {
                   step={1}
                   value={config.receiverMdsDbm}
                   onChange={(e) => setConfig((prev) => ({ ...prev, receiverMdsDbm: Number(e.target.value) }))}
-                  className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                  className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-white"
                 />
               </div>
 
               <div>
-                <div className="flex justify-between text-[10px] font-mono text-slate-400 mb-1">
-                  <span>Thermal False Alarm (P_fa):</span>
-                  <span className="text-slate-300 font-bold">{(config.pFaAmbient * 100).toFixed(1)}%</span>
+                <div className="flex justify-between text-[10px] text-zinc-400 mb-1">
+                  <span>False Alarm Prob (P_fa):</span>
+                  <span className="text-white font-bold">{(config.pFaAmbient * 100).toFixed(1)}%</span>
                 </div>
                 <input
                   type="range"
@@ -450,31 +419,31 @@ export const App: React.FC = () => {
                   step={0.005}
                   value={config.pFaAmbient}
                   onChange={(e) => setConfig((prev) => ({ ...prev, pFaAmbient: Number(e.target.value) }))}
-                  className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                  className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-white"
                 />
               </div>
             </div>
 
             {/* Section 4: Live Threat Roster */}
-            <div className="pt-2 border-t border-slate-800/80">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-1.5 block">
+            <div className="pt-2 border-t border-zinc-800">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5 block">
                 Active Emitter Inventory
               </span>
-              <div className="space-y-1 text-[10px] font-mono text-slate-400">
+              <div className="space-y-1 text-[10px] text-zinc-400">
                 <div className="flex justify-between py-0.5">
-                  <span className="text-blue-400">● Class 1 (Surveillance):</span>
+                  <span className="text-zinc-300">Class 1 (Surveillance):</span>
                   <span>{config.numPeriodic} Radars (Fixed PRI)</span>
                 </div>
                 <div className="flex justify-between py-0.5">
-                  <span className="text-amber-400">● Class 2 (Agile FHSS):</span>
+                  <span className="text-zinc-300">Class 2 (Agile FHSS):</span>
                   <span>{config.numAgile} Nets (Hops / 3 ep)</span>
                 </div>
                 <div className="flex justify-between py-0.5">
-                  <span className="text-rose-400">● Class 3 (Missile Lock):</span>
-                  <span>Lethal Pop-Up Threat</span>
+                  <span className="text-zinc-300">Class 3 (Missile Lock):</span>
+                  <span className="text-white font-bold">Lethal Pop-Up</span>
                 </div>
                 <div className="flex justify-between py-0.5">
-                  <span className="text-purple-400">● Class 4 (Rotating Beam):</span>
+                  <span className="text-zinc-300">Class 4 (Rotating Beam):</span>
                   <span>{config.numSpatial} Radars (360° Scan)</span>
                 </div>
               </div>
@@ -483,107 +452,106 @@ export const App: React.FC = () => {
         )}
 
         {/* Center Main Cockpit Area */}
-        <main className="flex-1 relative bg-slate-950 flex flex-col overflow-hidden">
-          {/* Top Sub-Nav View Switcher */}
-          <div className="h-10 bg-slate-950/80 border-b border-slate-800/80 flex items-center justify-between px-4 shrink-0">
-            <div className="flex items-center space-x-1">
+        <main className="flex-1 relative bg-black flex flex-col overflow-hidden">
+          {/* Top Sub-Nav View Switcher (Text-Only) */}
+          <div className="h-10 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between px-3 sm:px-4 shrink-0 font-mono text-xs overflow-x-auto">
+            <div className="flex items-center space-x-1 shrink-0">
               {[
-                { id: 'waterfall', label: '2D Waterfall Spectrogram', icon: Radio },
-                { id: 'metrics', label: 'Figures of Merit Scorecard', icon: Target },
-                { id: 'theory', label: 'Radar Math & Proofs', icon: BookOpen },
-                { id: 'telemetry', label: 'Step Telemetry Log', icon: Activity }
-              ].map(({ id, label, icon: Icon }) => (
+                { id: 'waterfall', label: '2D SPECTROGRAM WATERFALL' },
+                { id: 'metrics', label: 'FIGURES OF MERIT SCORECARD' },
+                { id: 'theory', label: 'RADAR MATH & PROOFS' },
+                { id: 'telemetry', label: 'STEP TELEMETRY LOG' }
+              ].map(({ id, label }) => (
                 <button
                   key={id}
                   onClick={() => setActiveTab(id as any)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition cursor-pointer whitespace-nowrap ${
                     activeTab === id
-                      ? 'bg-slate-800 text-cyan-400 border border-slate-700 shadow-sm'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                      ? 'bg-zinc-800 text-white border border-zinc-600 font-bold'
+                      : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
                   }`}
                 >
-                  <Icon size={13} />
-                  <span>{label}</span>
+                  {label}
                 </button>
               ))}
             </div>
 
             {/* Active Strategy Badge */}
-            <div className="hidden sm:flex items-center gap-2 text-[11px] font-mono">
-              <span className="text-slate-400">Active Look:</span>
-              <span className="text-cyan-400 font-bold">{activeSchedulerName}</span>
+            <div className="hidden lg:flex items-center gap-2 text-[11px] font-mono shrink-0 pl-2">
+              <span className="text-zinc-500">Scheduler:</span>
+              <span className="text-white font-bold">{activeSchedulerName}</span>
             </div>
           </div>
 
           {/* VIEW TAB 1: WATERFALL SPECTROGRAM */}
           {activeTab === 'waterfall' && (
-            <div className="flex-1 relative flex flex-col p-3 sm:p-4 overflow-hidden">
-              {/* Top Floating Inspection HUD (like odvp.vercel.app) */}
-              <div className="absolute top-5 left-6 z-20 pointer-events-none bg-slate-900/85 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-800 text-[11px] font-mono text-slate-300 shadow-2xl flex flex-col gap-0.5 max-w-sm">
+            <div className="flex-1 relative flex flex-col p-2.5 sm:p-4 overflow-hidden justify-between">
+              {/* Top Floating Inspection HUD */}
+              <div className="absolute top-4 left-5 z-20 pointer-events-none bg-zinc-900/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-zinc-800 text-[11px] font-mono text-zinc-300 shadow-xl flex flex-col gap-0.5 max-w-sm">
                 <div className="flex items-center gap-2">
-                  <span className="text-cyan-400 font-bold">Look: Ch {currentLog.actions[currentStep]}</span>
-                  <span className="text-slate-500">•</span>
-                  <span className={isCurrentIntercept ? 'text-emerald-400 font-bold' : 'text-slate-400'}>
-                    {isCurrentIntercept ? '🎯 INTERCEPT HIT' : '○ Listening...'}
+                  <span className="text-white font-bold">Look: Ch {currentLog.actions[currentStep]}</span>
+                  <span className="text-zinc-600">•</span>
+                  <span className={isCurrentIntercept ? 'text-white font-bold' : 'text-zinc-400'}>
+                    {isCurrentIntercept ? '● INTERCEPT HIT' : '○ Silent Noise'}
                   </span>
                 </div>
-                <div className="text-[10px] text-slate-400">
-                  Target: <span className="text-slate-200">{threatLabels[currentCellThreat] || 'Quiet Spectrum'}</span>
+                <div className="text-[10px] text-zinc-400">
+                  Signal: <span className="text-zinc-200">{threatLabels[currentCellThreat] || 'Quiet Spectrum'}</span>
                 </div>
               </div>
 
-              {/* Top Right Quick Stats HUD */}
-              <div className="hidden md:flex absolute top-5 right-6 z-20 pointer-events-none bg-slate-900/85 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-800 text-[10px] font-mono text-slate-300 shadow-xl flex items-center gap-3">
+              {/* Top Right Stats Badge */}
+              <div className="hidden md:flex absolute top-4 right-5 z-20 pointer-events-none bg-zinc-900/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-zinc-800 text-[10px] font-mono text-zinc-300 shadow-xl items-center gap-3">
                 <div>
-                  Overall Pd: <strong className="text-cyan-400">{(activeMetrics.pDSlot * 100).toFixed(1)}%</strong>
+                  Overall Pd: <strong className="text-white">{(activeMetrics.pDSlot * 100).toFixed(1)}%</strong>
                 </div>
-                <div className="text-slate-600">|</div>
+                <div className="text-zinc-600">|</div>
                 <div>
-                  Missile Threat Pd: <strong className="text-rose-400">{(activeMetrics.pDSporadic * 100).toFixed(1)}%</strong>
+                  Missile Pd: <strong className="text-white">{(activeMetrics.pDSporadic * 100).toFixed(1)}%</strong>
                 </div>
-                <div className="text-slate-600">|</div>
+                <div className="text-zinc-600">|</div>
                 <div>
-                  Gain: <strong className="text-emerald-400">{activeMetrics.interceptionEfficiencyRatio.toFixed(2)}x</strong>
+                  Gain: <strong className="text-white">{activeMetrics.interceptionEfficiencyRatio.toFixed(2)}x</strong>
                 </div>
               </div>
 
               {/* Contained Canvas Viewport */}
-              <div className="flex-1 min-h-0 relative flex flex-col justify-center">
+              <div className="flex-1 min-h-[220px] max-h-[460px] relative flex flex-col justify-center my-1">
                 <WaterfallCanvas
                   env={env}
                   selectedLog={currentLog}
                   currentStep={currentStep}
                   onSeek={setCurrentStep}
-                  height={window.innerHeight > 800 ? 360 : 280}
+                  height={window.innerHeight > 800 ? 320 : 260}
                 />
 
                 {/* Radar Axis Scale Legend */}
-                <div className="flex justify-between text-[9px] font-mono text-slate-500 px-2 pt-1">
-                  <span>Frequency: Channel 0 (Low Band)</span>
-                  <span>Time Epochs ($t = 0 \to {config.numSteps - 1}$)</span>
-                  <span>Channel {config.numChannels - 1} (High Band)</span>
+                <div className="flex justify-between text-[9px] font-mono text-zinc-500 px-2 pt-1">
+                  <span>Ch 0 (Low Band)</span>
+                  <span>Time Epochs (t = 0 → {config.numSteps - 1})</span>
+                  <span>Ch {config.numChannels - 1} (High Band)</span>
                 </div>
               </div>
 
-              {/* Horizontal Legend Strip */}
-              <div className="flex items-center justify-center gap-2 sm:gap-4 text-[10px] font-mono text-slate-400 py-1.5 flex-wrap">
+              {/* Monochromatic Tactical Legend Strip */}
+              <div className="flex items-center justify-center gap-2 sm:gap-4 text-[10px] font-mono text-zinc-400 py-1 flex-wrap">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-blue-600"></span> Periodic Radar
+                  <span className="w-2.5 h-2.5 rounded-sm bg-[#383842]"></span> Periodic Radar
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-amber-600"></span> Agile FHSS
+                  <span className="w-2.5 h-2.5 rounded-sm bg-[#5c5c6b]"></span> Agile FHSS
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-rose-600"></span> Missile Lock (Pop-Up)
+                  <span className="w-2.5 h-2.5 rounded-sm bg-[#8e8e9c]"></span> Missile Lock (Pop-Up)
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-purple-600"></span> Rotating Beam
+                  <span className="w-2.5 h-2.5 rounded-sm bg-[#c4c4d0]"></span> Rotating Beam
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm bg-sky-400 opacity-60"></span> Receiver Look
+                  <span className="w-2.5 h-2.5 rounded-sm border border-zinc-400 bg-white/20"></span> Dwell Look
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> DIRECT HIT!
+                  <span className="w-2.5 h-2.5 rounded-full bg-white"></span> INTERCEPT HIT
                 </div>
               </div>
 
@@ -607,34 +575,34 @@ export const App: React.FC = () => {
                 />
               </div>
 
-              {/* Bottom Quick KPI Strip */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-                <div className="bg-slate-900/60 border border-slate-800 rounded-lg p-2 text-center">
-                  <div className="text-[10px] font-mono text-slate-400 uppercase">Enemy Pulses</div>
-                  <div className="text-sm font-mono font-bold text-slate-100">{activeMetrics.totalTransmissionsGroundTruth}</div>
-                  <div className="text-[9px] text-slate-500">In band ground truth</div>
+              {/* Bottom Quick KPI Strip (Monochrome) */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 font-mono">
+                <div className="bg-zinc-950 border border-zinc-850 rounded-lg p-2 text-center">
+                  <div className="text-[10px] text-zinc-500 uppercase">Enemy Pulses</div>
+                  <div className="text-sm font-bold text-white">{activeMetrics.totalTransmissionsGroundTruth}</div>
+                  <div className="text-[9px] text-zinc-600">In-Band Ground Truth</div>
                 </div>
 
-                <div className="bg-slate-900/60 border border-slate-800 rounded-lg p-2 text-center">
-                  <div className="text-[10px] font-mono text-slate-400 uppercase">Baseline Sweep</div>
-                  <div className="text-sm font-mono font-bold text-rose-400">{baselineMetrics.totalDetections} hits</div>
-                  <div className="text-[9px] text-slate-500">{(baselineMetrics.pDSlot * 100).toFixed(1)}% caught</div>
+                <div className="bg-zinc-950 border border-zinc-850 rounded-lg p-2 text-center">
+                  <div className="text-[10px] text-zinc-500 uppercase">Baseline Sweep</div>
+                  <div className="text-sm font-bold text-zinc-300">{baselineMetrics.totalDetections} hits</div>
+                  <div className="text-[9px] text-zinc-600">{(baselineMetrics.pDSlot * 100).toFixed(1)}% caught</div>
                 </div>
 
-                <div className="bg-slate-900/60 border border-slate-800 rounded-lg p-2 text-center">
-                  <div className="text-[10px] font-mono text-slate-400 uppercase">Co-Prime Sweeper</div>
-                  <div className="text-sm font-mono font-bold text-purple-400">
+                <div className="bg-zinc-950 border border-zinc-850 rounded-lg p-2 text-center">
+                  <div className="text-[10px] text-zinc-500 uppercase">Co-Prime Sweeper</div>
+                  <div className="text-sm font-bold text-zinc-200">
                     {metrics['Co-Prime Sweeper (Optimal Scan)']?.totalDetections} hits
                   </div>
-                  <div className="text-[9px] text-slate-500">
+                  <div className="text-[9px] text-zinc-500">
                     {metrics['Co-Prime Sweeper (Optimal Scan)']?.interceptionEfficiencyRatio.toFixed(2)}x baseline
                   </div>
                 </div>
 
-                <div className="bg-slate-900/60 border border-slate-800 rounded-lg p-2 text-center">
-                  <div className="text-[10px] font-mono text-slate-400 uppercase">Q-Learning Agent</div>
-                  <div className="text-sm font-mono font-bold text-emerald-400">{qlMetrics.totalDetections} hits</div>
-                  <div className="text-[9px] text-emerald-400/80 font-bold">
+                <div className="bg-zinc-950 border border-zinc-850 rounded-lg p-2 text-center">
+                  <div className="text-[10px] text-zinc-500 uppercase">Q-Learning Agent</div>
+                  <div className="text-sm font-bold text-white">{qlMetrics.totalDetections} hits</div>
+                  <div className="text-[9px] text-zinc-300 font-bold">
                     {qlMetrics.interceptionEfficiencyRatio.toFixed(2)}x gain • 3.1x missile
                   </div>
                 </div>
@@ -655,35 +623,35 @@ export const App: React.FC = () => {
 
           {/* VIEW TAB 3: RADAR MATH THEORY */}
           {activeTab === 'theory' && (
-            <div className="flex-1 p-5 overflow-y-auto custom-scrollbar space-y-4 max-w-4xl mx-auto text-xs">
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
-                <h3 className="font-mono font-bold text-sm text-cyan-400 uppercase">
+            <div className="flex-1 p-5 overflow-y-auto custom-scrollbar space-y-4 max-w-4xl mx-auto text-xs font-mono">
+              <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-4 space-y-2">
+                <h3 className="font-bold text-sm text-white uppercase">
                   1. The Number-Theoretic Co-Prime Scan (Chinese Remainder Theorem)
                 </h3>
-                <p className="text-slate-300 leading-relaxed">
+                <p className="text-zinc-300 leading-relaxed font-sans">
                   When a linear receiver sweeps C = 32 channels sequentially (s=1) and an adversary's surveillance radar rotates with period T_e = 40 steps:
-                  gcd(C, T_e) = gcd(32, 40) = 8 &gt; 1.
+                  gcd(32, 40) = 8 &gt; 1.
                   Because periods share common divisors, the sampling phase repeats in a restricted subgroup, leaving 75% of the phase space permanently blind!
                 </p>
-                <div className="bg-slate-950 p-2.5 rounded font-mono text-purple-400 text-center border border-slate-800">
+                <div className="bg-black p-2.5 rounded font-mono text-white text-center border border-zinc-800">
                   a_t = (t × prime_stride) mod C &nbsp;|&nbsp; gcd(stride, C) = 1
                 </div>
-                <p className="text-slate-400 text-[11px]">
+                <p className="text-zinc-400 text-[11px] font-sans">
                   By the Chinese Remainder Theorem, using a prime stride guarantees a non-repeating permutation across all channels, breaking harmonic resonance.
                 </p>
               </div>
 
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
-                <h3 className="font-mono font-bold text-sm text-emerald-400 uppercase">
+              <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-4 space-y-2">
+                <h3 className="font-bold text-sm text-white uppercase">
                   2. Cognitive Reinforcement Learning (POMDP & Bellman TD)
                 </h3>
-                <p className="text-slate-300 leading-relaxed">
+                <p className="text-zinc-300 leading-relaxed font-sans">
                   Because an instantaneous receiver can only observe the channel it dwells on, offline static datasets fail in electronic warfare. The agent interacts with a Partially Observable Markov Decision Process (POMDP):
                 </p>
                 <div className="grid grid-cols-3 gap-2 font-mono text-center text-[10px]">
-                  <div className="p-2 rounded bg-emerald-950/40 border border-emerald-800 text-emerald-400 font-bold">+10.0 Intercept Hit</div>
-                  <div className="p-2 rounded bg-slate-950 border border-slate-800 text-slate-400">-1.0 Empty Dwell</div>
-                  <div className="p-2 rounded bg-rose-950/40 border border-rose-800 text-rose-400 font-bold">-5.0 Missed Lethal Burst</div>
+                  <div className="p-2 rounded bg-zinc-900 border border-zinc-700 text-white font-bold">+10.0 Intercept Hit</div>
+                  <div className="p-2 rounded bg-zinc-950 border border-zinc-800 text-zinc-400">-1.0 Empty Dwell</div>
+                  <div className="p-2 rounded bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold">-5.0 Missed Lethal Burst</div>
                 </div>
               </div>
             </div>
@@ -691,23 +659,22 @@ export const App: React.FC = () => {
 
           {/* VIEW TAB 4: STEP TELEMETRY LOG */}
           {activeTab === 'telemetry' && (
-            <div className="flex-1 p-4 overflow-hidden flex flex-col">
+            <div className="flex-1 p-4 overflow-hidden flex flex-col font-mono">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-mono text-slate-400">
+                <span className="text-xs text-zinc-400">
                   Recorded Telemetry Dwell History (First 150 Epochs):
                 </span>
                 <button
                   onClick={downloadTelemetryCsv}
-                  className="flex items-center gap-1.5 px-3 py-1 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-lg text-xs font-mono font-semibold"
+                  className="px-3 py-1.5 bg-white text-black hover:bg-zinc-200 rounded-lg text-xs font-bold transition cursor-pointer"
                 >
-                  <Download size={13} />
-                  <span>Download Full CSV</span>
+                  DOWNLOAD FULL CSV
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto custom-scrollbar border border-slate-800 rounded-xl bg-slate-900/60">
+              <div className="flex-1 overflow-y-auto custom-scrollbar border border-zinc-800 rounded-xl bg-zinc-950">
                 <table className="w-full text-left font-mono text-xs">
-                  <thead className="sticky top-0 bg-slate-950 text-slate-400 border-b border-slate-800">
+                  <thead className="sticky top-0 bg-black text-zinc-400 border-b border-zinc-800">
                     <tr>
                       <th className="py-2 px-3">Epoch</th>
                       <th className="py-2 px-3">Dwell Ch</th>
@@ -716,25 +683,25 @@ export const App: React.FC = () => {
                       <th className="py-2 px-3 text-right">Step Reward</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                  <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
                     {Array.from({ length: Math.min(150, config.numSteps) }).map((_, t) => {
                       const ch = currentLog.actions[t];
                       const threat = env.getCell(t, ch);
                       const hit = currentLog.detections[t] === 1;
                       const rew = currentLog.rewards[t];
                       return (
-                        <tr key={t} className={hit ? 'bg-emerald-950/20' : 'hover:bg-slate-850'}>
+                        <tr key={t} className={hit ? 'bg-zinc-900' : 'hover:bg-zinc-900/50'}>
                           <td className="py-1.5 px-3">{t}</td>
-                          <td className="py-1.5 px-3 font-bold text-cyan-400">Ch {ch}</td>
+                          <td className="py-1.5 px-3 font-bold text-white">Ch {ch}</td>
                           <td className="py-1.5 px-3">{threatLabels[threat] || 'Quiet'}</td>
                           <td className="py-1.5 px-3">
                             {hit ? (
-                              <span className="text-emerald-400 font-bold">● INTERCEPT HIT</span>
+                              <span className="text-white font-bold">● INTERCEPT HIT</span>
                             ) : (
-                              <span className="text-slate-500">○ Silent</span>
+                              <span className="text-zinc-500">○ Silent</span>
                             )}
                           </td>
-                          <td className={`py-1.5 px-3 text-right font-bold ${rew > 0 ? 'text-emerald-400' : 'text-slate-400'}`}>
+                          <td className={`py-1.5 px-3 text-right font-bold ${rew > 0 ? 'text-white' : 'text-zinc-500'}`}>
                             {rew > 0 ? `+${rew.toFixed(1)}` : rew.toFixed(1)}
                           </td>
                         </tr>

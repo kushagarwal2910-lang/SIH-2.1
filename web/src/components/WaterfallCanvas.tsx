@@ -33,16 +33,16 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
   const T = env.config.numSteps;
   const C = env.config.numChannels;
 
-  // Tactical military color scheme
+  // Tactical Monochrome / Grayscale Palette (FLIR style)
   const COLORS = {
-    empty: '#070a13',
-    periodic: '#2563eb',       // Class 1: Periodic Surveillance Radar (Royal Blue)
-    agile: '#d97706',          // Class 2: Frequency-Hopper (Amber)
-    sporadic: '#e11d48',       // Class 3: Pop-Up Missile Radar (Lethal Crimson)
-    spatial: '#9333ea',        // Class 4: Spatially Rotating Radar (Violet)
-    hit: '#10b981',            // Direct Interception (Glowing Emerald)
-    dwell: '#38bdf8',          // Receiver Look (Sky Cyan)
-    grid: 'rgba(30, 41, 59, 0.35)'
+    empty: '#050507',
+    periodic: '#383842',       // Class 1: Periodic Radar (Dark Neutral Grey)
+    agile: '#5c5c6b',          // Class 2: Agile FHSS (Mid Grey)
+    sporadic: '#8e8e9c',       // Class 3: Pop-Up Missile (Light Grey)
+    spatial: '#c4c4d0',        // Class 4: Rotating Radar (Silver Grey)
+    hit: '#ffffff',            // Interception Hit (Pure White-Hot)
+    dwell: 'rgba(255, 255, 255, 0.22)',
+    grid: 'rgba(255, 255, 255, 0.06)'
   };
 
   const threatLabels: Record<number, string> = {
@@ -100,14 +100,14 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
 
     // 3. Draw Receiver Dwells (historical trajectory up to currentStep)
     const renderLimit = Math.min(T, currentStep + 1);
-    ctx.fillStyle = 'rgba(56, 189, 248, 0.40)';
+    ctx.fillStyle = COLORS.dwell;
     for (let t = 0; t < renderLimit; t++) {
       const ch = selectedLog.actions[t];
       const y = (C - 1 - ch) * cellHeight + cellHeight * 0.2;
       ctx.fillRect(t * cellWidth, y, Math.max(1.5, cellWidth), cellHeight * 0.6);
     }
 
-    // 4. Draw Interception Hits
+    // 4. Draw Interception Hits (Pure White)
     ctx.fillStyle = COLORS.hit;
     for (let t = 0; t < renderLimit; t++) {
       if (selectedLog.detections[t] === 1) {
@@ -119,27 +119,27 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
         ctx.beginPath();
         ctx.arc(cx, cy, Math.max(2.5, radius), 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1;
         ctx.stroke();
       }
     }
 
     // 5. Draw Live Playhead Line
     const playheadX = currentStep * cellWidth;
-    ctx.strokeStyle = '#00f0ff';
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.2;
     ctx.beginPath();
     ctx.moveTo(playheadX, 0);
     ctx.lineTo(playheadX, canvasHeight);
     ctx.stroke();
 
-    // Active look crosshair at playhead
+    // Active look indicator at playhead
     if (currentStep < T) {
       const activeCh = selectedLog.actions[currentStep];
       const activeY = (C - 1 - activeCh) * cellHeight;
-      ctx.strokeStyle = '#00f0ff';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.8;
       ctx.strokeRect(playheadX - 4, activeY - 1, Math.max(cellWidth + 8, 12), cellHeight + 2);
     }
   }, [env, selectedLog, currentStep, T, C]);
@@ -191,7 +191,7 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
   };
 
   return (
-    <div ref={containerRef} className="relative w-full rounded-xl overflow-hidden border border-slate-800 bg-slate-950/80 shadow-2xl" style={{ height }}>
+    <div ref={containerRef} className="relative w-full rounded-xl overflow-hidden border border-zinc-800 bg-black shadow-xl" style={{ height }}>
       <canvas
         ref={canvasRef}
         onPointerDown={(e) => {
@@ -206,29 +206,29 @@ export const WaterfallCanvas: React.FC<WaterfallCanvasProps> = ({
       {/* Floating Inspection Tooltip */}
       {hoverInfo && (
         <div
-          className="absolute pointer-events-none z-30 transform -translate-x-1/2 -translate-y-full mb-2 px-3 py-2 bg-slate-900/95 border border-slate-700 rounded-lg shadow-2xl backdrop-blur-md text-[11px] font-mono text-slate-200"
+          className="absolute pointer-events-none z-30 transform -translate-x-1/2 -translate-y-full mb-2 px-3 py-2 bg-zinc-900/95 border border-zinc-700 rounded-lg shadow-2xl backdrop-blur-md text-[11px] font-mono text-zinc-200"
           style={{
             left: Math.max(100, Math.min((canvasRef.current?.width || 300) - 100, hoverInfo.x)),
             top: Math.max(60, hoverInfo.y)
           }}
         >
-          <div className="flex items-center gap-2 mb-1 border-b border-slate-800 pb-1">
-            <span className="text-slate-400">Epoch:</span>
+          <div className="flex items-center gap-2 mb-1 border-b border-zinc-800 pb-1">
+            <span className="text-zinc-400">Epoch:</span>
             <span className="text-white font-bold">{hoverInfo.step}</span>
-            <span className="text-slate-600">•</span>
-            <span className="text-slate-400">Channel:</span>
-            <span className="text-cyan-400 font-bold">Ch {hoverInfo.channel}</span>
+            <span className="text-zinc-600">•</span>
+            <span className="text-zinc-400">Channel:</span>
+            <span className="text-white font-bold">Ch {hoverInfo.channel}</span>
           </div>
-          <div className="text-slate-300 font-sans text-[10px] mb-1">
+          <div className="text-zinc-300 font-sans text-[10px] mb-1">
             {threatLabels[hoverInfo.threatClass] || 'Quiet Spectrum'}
           </div>
           {hoverInfo.isIntercepted ? (
-            <div className="text-emerald-400 font-bold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> DIRECT INTERCEPT HIT!
+            <div className="text-white font-bold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-white"></span> DIRECT INTERCEPT HIT
             </div>
           ) : hoverInfo.receiverHere ? (
-            <div className="text-cyan-300 flex items-center gap-1 text-[10px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Sensor Dwell Look
+            <div className="text-zinc-400 flex items-center gap-1 text-[10px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-zinc-400"></span> Receiver Look Dwell
             </div>
           ) : null}
         </div>
