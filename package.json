@@ -1,0 +1,23 @@
+{
+  "name": "aero-scan-ew-c2",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AERO-SCAN: Cognitive Electronic Warfare & Electronic Support Measures (ESM) Receiver Scheduling Suite",
+  "scripts": {
+    "build": "cd web && npm install && npm run build",
+    "dev": "cd web && npm run dev",
+    "preview": "cd web && npm run preview"
+  },
+  "keywords": [
+    "electronic-warfare",
+    "esm",
+    "radar",
+    "machine-learning",
+    "reinforcement-learning",
+    "q-learning",
+    "chinese-remainder-theorem",
+    "smart-india-hackathon"
+  ],
+  "author": "Kush Agarwal",
+  "license": "MIT"
+}
